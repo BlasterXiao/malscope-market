@@ -1,0 +1,9 @@
+{
+  "name": "yara",
+  "version": "0.1.0",
+  "description": "按模板编写 YARA 规则，五原则自检（准确性、唯一性、通用检测性、低误报、快速性）",
+  "author": {
+    "name": "xiaopotianhuang"
+  },
+  "keywords": ["yara", "detection", "malware-analysis"]
+}

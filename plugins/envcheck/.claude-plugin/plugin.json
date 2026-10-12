@@ -1,0 +1,9 @@
+{
+  "name": "envcheck",
+  "version": "0.1.0",
+  "description": "检查本机分析工具是否装好、版本是否与插件匹配，缺什么给出安装步骤",
+  "author": {
+    "name": "xiaopotianhuang"
+  },
+  "keywords": ["setup", "environment", "malware-analysis"]
+}

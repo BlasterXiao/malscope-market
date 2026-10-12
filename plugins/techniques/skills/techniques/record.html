@@ -1,0 +1,123 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{{样本名}} 技术点记录</title>
+<style>
+:root {
+  --bg: #F4EFEA; --card: #FFFFFF; --fog: #F8F8F7; --ink: #383838; --muted: #6E6A66;
+  --line: #000000; --sun: #FFDE00; --sky: #6FC2FF; --soft: #EBF9FF; --grid: #E4D6C3; --bad: #B3261E;
+  --mono: "IBM Plex Mono", "Cascadia Mono", Consolas, monospace;
+  --sans: "Noto Sans SC", "Microsoft YaHei", "PingFang SC", sans-serif;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #1C1A18; --card: #262321; --fog: #2D2A27; --ink: #ECE6DF; --muted: #A9A29A;
+    --line: #ECE6DF; --soft: #1D2A33; --grid: #34302B; --bad: #FF8A80;
+    color-scheme: dark;
+  }
+}
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--bg); color: var(--ink); font: 15px/1.6 var(--sans); }
+.eyebrow { background: var(--sun); color: #1A1A1A; border-bottom: 2px solid #000; font: 700 12px/16px var(--mono); letter-spacing: .08em; padding: 12px 16px; text-align: center; }
+main { max-width: 960px; margin: 0 auto; padding: 40px 16px 80px; display: flex; flex-direction: column; gap: 48px; }
+h1 { font: 700 clamp(28px, 5vw, 44px)/1.2 var(--mono); margin: 0; }
+h2 { font: 700 22px/1.3 var(--mono); margin: 0; }
+h3 { font: 700 13px/1.3 var(--mono); letter-spacing: .06em; color: var(--muted); margin: 0; }
+p { margin: 0; max-width: 72ch; }
+code { font-family: var(--mono); font-size: .92em; }
+header.top { border: 2px solid var(--line); border-radius: 2px; padding: 28px; display: flex; flex-direction: column; gap: 14px;
+  background-image: repeating-linear-gradient(0deg, transparent 0 39px, var(--grid) 39px 40px), repeating-linear-gradient(90deg, transparent 0 39px, var(--grid) 39px 40px); }
+.meta { display: flex; flex-wrap: wrap; gap: 8px; }
+.meta span { font: 12px/1 var(--mono); border: 2px solid var(--line); background: var(--card); padding: 6px 8px; border-radius: 2px; }
+.tablewrap { overflow-x: auto; border: 2px solid var(--line); border-radius: 2px; background: var(--card); }
+table { border-collapse: collapse; width: 100%; min-width: 560px; font-size: 14px; }
+th, td { text-align: left; vertical-align: top; padding: 10px 14px; border-bottom: 1px solid var(--grid); }
+th { font: 700 12px/16px var(--mono); letter-spacing: .06em; background: var(--soft); border-bottom: 2px solid var(--line); }
+tr:last-child td { border-bottom: 0; }
+section.card { background: var(--card); border: 2px solid var(--line); border-radius: 2px; padding: 28px; display: flex; flex-direction: column; gap: 16px; }
+section.card .head { display: flex; flex-direction: column; gap: 10px; border-bottom: 2px solid var(--line); padding-bottom: 14px; }
+.chip { display: inline-block; font: 700 12px/1 var(--mono); padding: 6px 8px; border: 2px solid var(--line); border-radius: 2px; background: var(--sun); color: #1A1A1A; }
+.diagram { overflow-x: auto; border: 2px solid var(--line); border-radius: 2px; background: var(--fog); padding: 12px; }
+.diagram svg { display: block; width: 100%; min-width: 600px; height: auto; }
+.pending { color: var(--bad); font-weight: 700; }
+</style>
+</head>
+<body>
+<div class="eyebrow">技术点记录 · 本地文件 · 不上传</div>
+<main>
+
+  <header class="top">
+    <h1>{{样本名}} 技术点记录</h1>
+    <div class="meta">
+      <span>分析日期 {{YYYY-MM-DD}}</span>
+      <span>工具 {{bnsql / idasql / ghidrasql}}</span>
+      <span>技术点 {{数量}} 个</span>
+    </div>
+    <p>{{一两句话概括样本：类型、主要能力}}</p>
+  </header>
+
+  <section>
+    <h2>技术点总览</h2>
+    <div class="tablewrap">
+      <table>
+        <thead><tr><th>技术点</th><th>分类</th><th>ATT&amp;CK</th><th>关键证据</th></tr></thead>
+        <tbody>
+          <!-- 每个技术点一行 -->
+          <tr><td><a href="#{{slug}}">{{名称}}</a></td><td>{{分类}}</td><td><code>{{Txxxx}}</code></td><td>{{一句话}}</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- CARD:START 每个技术点复制一份 -->
+  <section class="card" id="{{slug}}">
+    <div class="head">
+      <h2>{{中文名}} <span style="font-weight:400">/ {{英文名}}</span></h2>
+      <div class="meta">
+        <span>分类 {{分类}}</span>
+        <span class="chip">{{Txxxx}} {{ATT&amp;CK 官方英文名}}</span>
+      </div>
+    </div>
+
+    <h3>原理</h3>
+    <p>{{3 到 6 句：面对什么限制，绕过了什么，数据或控制流怎么走}}</p>
+
+    <h3>机制图</h3>
+    <div class="diagram">
+      <!-- 参与方画方框，箭头写动作；被阻断的路径用 var(--bad) 红色虚线并在中间画叉 -->
+      <svg viewBox="0 0 760 200" role="img" aria-label="{{一句话说明这张图}}" font-family="Consolas, monospace" font-size="12" fill="currentColor">
+        <defs>
+          <marker id="arr-{{slug}}" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="currentColor"/></marker>
+        </defs>
+        <!-- {{在这里画}} -->
+      </svg>
+    </div>
+
+    <h3>样本证据</h3>
+    <div class="tablewrap">
+      <table>
+        <thead><tr><th>证据</th><th>地址 / 位置</th><th>来源查询</th></tr></thead>
+        <tbody>
+          <tr><td>{{描述}}</td><td><code>{{0x...}}</code></td><td><code>{{/idasql:xrefs}}</code></td></tr>
+          <!-- 补查不到的证据：<td class="pending">待核实</td> -->
+        </tbody>
+      </table>
+    </div>
+
+    <h3>本样本的实现细节</h3>
+    <p>{{与技术点库通用描述不同的地方：编码、密钥、记录类型、分段长度等}}</p>
+
+    <h3>检测要点</h3>
+    <ul>
+      <li>网络侧：{{...}}</li>
+      <li>主机侧：{{...}}</li>
+      <li>样本侧：{{可交给 yara 的特征}}</li>
+    </ul>
+  </section>
+  <!-- CARD:END -->
+
+</main>
+</body>
+</html>

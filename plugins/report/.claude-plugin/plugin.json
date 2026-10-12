@@ -1,0 +1,9 @@
+{
+  "name": "report",
+  "version": "0.1.0",
+  "description": "把一次样本分析整理成 HTML 或 Markdown 记录",
+  "author": {
+    "name": "xiaopotianhuang"
+  },
+  "keywords": ["report", "malware-analysis"]
+}

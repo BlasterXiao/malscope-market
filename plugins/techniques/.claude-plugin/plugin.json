@@ -1,0 +1,9 @@
+{
+  "name": "techniques",
+  "version": "0.1.0",
+  "description": "提取样本技术点，标注 ATT&CK，生成 HTML 详细记录",
+  "author": {
+    "name": "xiaopotianhuang"
+  },
+  "keywords": ["mitre-attack", "ttp", "malware-analysis"]
+}

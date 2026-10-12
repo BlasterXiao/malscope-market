@@ -1,0 +1,27 @@
+# 分析产出只留本地
+output/
+
+# 防止误提交样本与分析数据库
+*.exe
+*.dll
+*.sys
+*.bin
+*.dmp
+*.vir
+*.zip
+*.7z
+*.rar
+*.bndb
+*.i64
+*.idb
+*.id0
+*.id1
+*.id2
+*.nam
+*.til
+*.gpr
+*.rep/
+
+# 系统文件
+Thumbs.db
+.DS_Store

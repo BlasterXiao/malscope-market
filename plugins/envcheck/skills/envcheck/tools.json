@@ -1,0 +1,78 @@
+{
+  "_说明": "每个外部插件依赖的本机工具。升级 marketplace.json 里的 sha 时，同步更新这里的 plugin_pin 和 recommended_program。",
+  "tools": [
+    {
+      "id": "bnsql",
+      "plugin": "bnsql",
+      "plugin_pin": "fef0d4f（插件 0.0.13）",
+      "binary": "bnsql",
+      "version_cmd": "bnsql --version",
+      "recommended_program": "0.0.13",
+      "release": "https://github.com/0xeb/bnsql/releases",
+      "host": "Binary Ninja",
+      "host_checks": [
+        "环境变量 BN_INSTALL_DIR 指向 BN 安装目录，或 BN 安装目录在 PATH 中，或 bnsql.exe 与 binaryninja.exe 在同一目录",
+        "Windows 默认安装目录：C:\\Program Files\\Vector35\\BinaryNinja"
+      ],
+      "common_errors": {
+        "binaryninjacore.dll was not found": "bnsql 找不到 BN 核心库：设置 BN_INSTALL_DIR，或把 BN 安装目录加入 PATH"
+      },
+      "setup": "setup/bnsql.md"
+    },
+    {
+      "id": "idasql",
+      "plugin": "idasql",
+      "plugin_pin": "416d215（插件 0.0.19）",
+      "binary": "idasql",
+      "version_cmd": "idasql --version",
+      "recommended_program": "0.0.19",
+      "release": "https://github.com/allthingsida/idasql/releases",
+      "host": "IDA Pro 9.2 / 9.3 / 9.4",
+      "host_checks": [
+        "IDA 安装目录在 PATH 中（ida.exe 能被 where 找到）",
+        "idasql.exe 在 IDA 安装目录",
+        "idasql.dll 在 IDA 安装目录下的 plugins 目录（UI 模式需要）",
+        "下载的构建要和 IDA 版本一致（ida92 / ida93 / ida94），不能混用"
+      ],
+      "common_errors": {},
+      "setup": "setup/idasql.md"
+    },
+    {
+      "id": "ghidrasql",
+      "plugin": "ghidrasql",
+      "plugin_pin": "619e6dd（插件 manifest 未写版本）",
+      "binary": "ghidrasql",
+      "version_cmd": "ghidrasql --version",
+      "recommended_program": "0.0.7",
+      "pairing_note": "上游未写明技能提交与程序版本的对应关系，按最新发布版推荐",
+      "release": "https://github.com/0xeb/ghidrasql/releases",
+      "host": "Ghidra 12.1+ 与 JDK 21",
+      "host_checks": [
+        "Ghidra 版本 12.1 或更高",
+        "JDK 21 可用（java -version）",
+        "LibGhidraHost 扩展装在当前使用的 Ghidra 里：<Ghidra 目录>\\Ghidra\\Extensions\\LibGhidraHost 或 %APPDATA%\\ghidra\\<版本>\\Extensions\\LibGhidraHost",
+        "升级 Ghidra 后要给新版本重新安装 LibGhidraHost"
+      ],
+      "common_errors": {
+        "failed to locate LibGhidraHeadlessServer.java": "当前 Ghidra 没装 LibGhidraHost 扩展"
+      },
+      "setup": "setup/ghidrasql.md"
+    },
+    {
+      "id": "yara",
+      "plugin": "yara",
+      "plugin_pin": "本仓库",
+      "binary": "yara",
+      "extra_binaries": ["yarac"],
+      "version_cmd": "yara --version",
+      "recommended_program": "4.x",
+      "release": "https://github.com/VirusTotal/yara/releases",
+      "host": "无",
+      "host_checks": [
+        "yara 与 yarac 都在 PATH 中"
+      ],
+      "common_errors": {},
+      "setup": "setup/yara.md"
+    }
+  ]
+}

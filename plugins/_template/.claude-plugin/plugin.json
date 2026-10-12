@@ -1,0 +1,9 @@
+{
+  "name": "my-plugin",
+  "version": "0.1.0",
+  "description": "一句话说明这个插件做什么",
+  "author": {
+    "name": "xiaopotianhuang"
+  },
+  "keywords": ["malware-analysis"]
+}

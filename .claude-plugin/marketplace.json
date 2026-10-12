@@ -1,0 +1,74 @@
+{
+  "name": "malscope-market",
+  "owner": {
+    "name": "xiaopotianhuang"
+  },
+  "metadata": {
+    "description": "静态样本分析插件目录：收录外部 SQL 逆向插件，以及自有的 YARA、技术点、报告插件。分析人员按场景自由挑选组合。"
+  },
+  "plugins": [
+    {
+      "name": "bnsql",
+      "description": "【外部】有 Binary Ninja 时使用：用 SQL 查函数、伪代码、交叉引用、字符串，并写回改名与注释。本机需要 BN + bnsql。",
+      "category": "reverse-engineering",
+      "homepage": "https://github.com/0xeb/bnsql-skills",
+      "source": {
+        "source": "git-subdir",
+        "url": "https://github.com/0xeb/bnsql-skills.git",
+        "path": "plugins/bnsql",
+        "ref": "main",
+        "sha": "fef0d4f7a7b1221fd09e7343e3c3d30480d46e79"
+      }
+    },
+    {
+      "name": "idasql",
+      "description": "【外部】有 IDA Pro 时使用：SQL 方式分析与写回，支持无头 CLI 和 UI 端口两种模式。本机需要 IDA + idasql.exe/.dll，where 能找到 idasql。",
+      "category": "reverse-engineering",
+      "homepage": "https://github.com/allthingsida/idasql-skills",
+      "source": {
+        "source": "git-subdir",
+        "url": "https://github.com/allthingsida/idasql-skills.git",
+        "path": "plugins/idasql",
+        "ref": "main",
+        "sha": "416d215bfc023e25c4a6c141ed882ee1cf406954"
+      }
+    },
+    {
+      "name": "ghidrasql",
+      "description": "【外部】只有免费工具或需要批量无头分析时使用：用 SQL 操作 Ghidra 工程。本机需要 Ghidra + ghidrasql。",
+      "category": "reverse-engineering",
+      "homepage": "https://github.com/0xeb/ghidrasql-skills",
+      "source": {
+        "source": "git-subdir",
+        "url": "https://github.com/0xeb/ghidrasql-skills.git",
+        "path": "plugins/ghidrasql",
+        "ref": "main",
+        "sha": "619e6ddac8daec12882bd64a8cf969103804681b"
+      }
+    },
+    {
+      "name": "yara",
+      "description": "【自有】按模板编写 YARA 规则，并按准确性、唯一性、通用检测性、低误报、快速性五原则自检。配合任一 *sql 插件取原始字节。本机需要 yara / yarac。",
+      "category": "security",
+      "source": "./plugins/yara"
+    },
+    {
+      "name": "techniques",
+      "description": "【自有】提取样本用到的技术点（如 DNS 隧道），写原理、机制图、样本证据、检测要点并标注 ATT&CK 编号，生成 HTML 详细记录。",
+      "category": "security",
+      "source": "./plugins/techniques"
+    },
+    {
+      "name": "report",
+      "description": "【自有】把一次分析过程整理成 HTML 或 Markdown 记录，只存本地。",
+      "category": "security",
+      "source": "./plugins/report"
+    },
+    {
+      "name": "envcheck",
+      "description": "【自有】检查本机的 bnsql / idasql / ghidrasql / yara 程序是否装好、版本是否与插件匹配，缺什么给出安装步骤。建议装外部插件后先跑一次 /envcheck。",
+      "category": "security",
+      "source": "./plugins/envcheck"
+    }
+  ]
+}
