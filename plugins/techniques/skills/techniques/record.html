@@ -21,12 +21,14 @@
 * { box-sizing: border-box; }
 body { margin: 0; background: var(--bg); color: var(--ink); font: 15px/1.6 var(--sans); }
 .eyebrow { background: var(--sun); color: #1A1A1A; border-bottom: 2px solid #000; font: 700 12px/16px var(--mono); letter-spacing: .08em; padding: 12px 16px; text-align: center; }
-main { max-width: 960px; margin: 0 auto; padding: 40px 16px 80px; display: flex; flex-direction: column; gap: 48px; }
+main { max-width: 980px; margin: 0 auto; padding: 40px 16px 80px; display: flex; flex-direction: column; gap: 48px; }
 h1 { font: 700 clamp(28px, 5vw, 44px)/1.2 var(--mono); margin: 0; }
 h2 { font: 700 22px/1.3 var(--mono); margin: 0; }
-h3 { font: 700 13px/1.3 var(--mono); letter-spacing: .06em; color: var(--muted); margin: 0; }
-p { margin: 0; max-width: 72ch; }
+h3 { font: 700 13px/1.3 var(--mono); letter-spacing: .06em; color: var(--muted); margin: 0; text-transform: uppercase; }
+h4 { font: 700 12px/1.3 var(--mono); letter-spacing: .06em; margin: 0; }
+p { margin: 0; max-width: 74ch; }
 code { font-family: var(--mono); font-size: .92em; }
+pre { margin: 0; background: var(--fog); border: 2px solid var(--line); border-radius: 2px; padding: 14px; overflow-x: auto; font: 12px/1.55 var(--mono); }
 header.top { border: 2px solid var(--line); border-radius: 2px; padding: 28px; display: flex; flex-direction: column; gap: 14px;
   background-image: repeating-linear-gradient(0deg, transparent 0 39px, var(--grid) 39px 40px), repeating-linear-gradient(90deg, transparent 0 39px, var(--grid) 39px 40px); }
 .meta { display: flex; flex-wrap: wrap; gap: 8px; }
@@ -36,12 +38,35 @@ table { border-collapse: collapse; width: 100%; min-width: 560px; font-size: 14p
 th, td { text-align: left; vertical-align: top; padding: 10px 14px; border-bottom: 1px solid var(--grid); }
 th { font: 700 12px/16px var(--mono); letter-spacing: .06em; background: var(--soft); border-bottom: 2px solid var(--line); }
 tr:last-child td { border-bottom: 0; }
-section.card { background: var(--card); border: 2px solid var(--line); border-radius: 2px; padding: 28px; display: flex; flex-direction: column; gap: 16px; }
+section.card { background: var(--card); border: 2px solid var(--line); border-radius: 2px; padding: 28px; display: flex; flex-direction: column; gap: 18px; }
 section.card .head { display: flex; flex-direction: column; gap: 10px; border-bottom: 2px solid var(--line); padding-bottom: 14px; }
 .chip { display: inline-block; font: 700 12px/1 var(--mono); padding: 6px 8px; border: 2px solid var(--line); border-radius: 2px; background: var(--sun); color: #1A1A1A; }
-.diagram { overflow-x: auto; border: 2px solid var(--line); border-radius: 2px; background: var(--fog); padding: 12px; }
-.diagram svg { display: block; width: 100%; min-width: 600px; height: auto; }
+.block { display: flex; flex-direction: column; gap: 10px; }
+/* 图示容器:内联 SVG 由下方渲染器生成,宽屏按原尺寸、窄屏等比缩放 */
+.diagram { border: 2px solid var(--line); border-radius: 2px; background: var(--fog); padding: 14px; display: flex; flex-direction: column; gap: 10px; }
+.diagram-svg { overflow-x: auto; }
+.diagram-svg svg { display: block; max-width: 100%; height: auto; }
+.cap { font: 12px/1.5 var(--mono); color: var(--muted); }
+.cap b { color: var(--ink); }
+/* 分步拆解:带编号圆点的竖向时间线,编号与图里的箭头编号一一对应 */
+ol.timeline { list-style: none; margin: 0; padding: 0; counter-reset: step; }
+ol.timeline li { position: relative; padding: 0 0 18px 42px; border-left: 2px solid var(--line); margin-left: 13px; }
+ol.timeline li:last-child { border-left-color: transparent; padding-bottom: 0; }
+ol.timeline li::before { counter-increment: step; content: counter(step); position: absolute; left: -15px; top: -3px;
+  width: 28px; height: 28px; border: 2px solid var(--line); border-radius: 50%; background: var(--sun); color: #1A1A1A;
+  font: 700 13px/1 var(--mono); display: flex; align-items: center; justify-content: center; }
+ol.timeline li b { font-weight: 700; }
+/* 例子:代码 + 预期输出 */
+.example { display: flex; flex-direction: column; gap: 10px; }
+.io { font: 12px/1.5 var(--mono); color: var(--muted); }
+.io b { color: var(--ink); }
+/* 检测要点三栏 */
+.cols3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+.cols3 .col { border: 2px solid var(--line); border-radius: 2px; background: var(--fog); padding: 14px; display: flex; flex-direction: column; gap: 8px; }
+.cols3 ul { margin: 0; padding-left: 1.1em; display: flex; flex-direction: column; gap: 6px; }
 .pending { color: var(--bad); font-weight: 700; }
+a { color: inherit; text-underline-offset: 3px; }
+@media (max-width: 720px) { .cols3 { grid-template-columns: 1fr; } }
 </style>
 </head>
 <body>
@@ -55,11 +80,31 @@ section.card .head { display: flex; flex-direction: column; gap: 10px; border-bo
       <span>工具 {{bnsql / idasql / ghidrasql}}</span>
       <span>技术点 {{数量}} 个</span>
     </div>
-    <p>{{一两句话概括样本：类型、主要能力}}</p>
+    <p>{{一两句话概括样本:类型、主要能力}}</p>
   </header>
 
   <section>
-    <h2>技术点总览</h2>
+    <h2>技术链总览</h2>
+    <p class="cap">这张图把下面每个技术点按执行顺序串起来,看清样本"从落地到外传"整条链路;方框点进去是对应卡片。</p>
+    <div class="diagram">
+      <!-- 概览流程图:节点按战术顺序排,start=入口,end=目的;blocked:true 的边画成红色虚线 -->
+      <script type="application/json" data-diagram="flow">
+      {
+        "caption": "样本技术链总览",
+        "nodes": [
+          {"id": "entry", "type": "start", "text": "样本启动"},
+          {"id": "t1", "type": "process", "text": "{{技术点A 简称}}"},
+          {"id": "t2", "type": "process", "text": "{{技术点B 简称}}"},
+          {"id": "c2", "type": "end", "text": "{{目的:C2 / 外传 / 持久化}}"}
+        ],
+        "edges": [
+          {"from": "entry", "to": "t1"},
+          {"from": "t1", "to": "t2", "text": "{{触发条件}}"},
+          {"from": "t2", "to": "c2"}
+        ]
+      }
+      </script>
+    </div>
     <div class="tablewrap">
       <table>
         <thead><tr><th>技术点</th><th>分类</th><th>ATT&amp;CK</th><th>关键证据</th></tr></thead>
@@ -71,7 +116,7 @@ section.card .head { display: flex; flex-direction: column; gap: 10px; border-bo
     </div>
   </section>
 
-  <!-- CARD:START 每个技术点复制一份 -->
+  <!-- CARD:START 每个技术点复制一份(图示槽按技术选用:通信/交互强的用交互图,控制流/分支强的用流程图,合适就都留) -->
   <section class="card" id="{{slug}}">
     <div class="head">
       <h2>{{中文名}} <span style="font-weight:400">/ {{英文名}}</span></h2>
@@ -81,43 +126,338 @@ section.card .head { display: flex; flex-direction: column; gap: 10px; border-bo
       </div>
     </div>
 
-    <h3>原理</h3>
-    <p>{{3 到 6 句：面对什么限制，绕过了什么，数据或控制流怎么走}}</p>
-
-    <h3>机制图</h3>
-    <div class="diagram">
-      <!-- 参与方画方框，箭头写动作；被阻断的路径用 var(--bad) 红色虚线并在中间画叉 -->
-      <svg viewBox="0 0 760 200" role="img" aria-label="{{一句话说明这张图}}" font-family="Consolas, monospace" font-size="12" fill="currentColor">
-        <defs>
-          <marker id="arr-{{slug}}" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="currentColor"/></marker>
-        </defs>
-        <!-- {{在这里画}} -->
-      </svg>
+    <div class="block">
+      <h3>攻击者面对的问题</h3>
+      <p>{{1 到 3 句:不用这个技术会被什么卡住(网络策略 / EDR / 字符串扫描……),给一个具体场景}}</p>
     </div>
 
-    <h3>样本证据</h3>
-    <div class="tablewrap">
-      <table>
-        <thead><tr><th>证据</th><th>地址 / 位置</th><th>来源查询</th></tr></thead>
-        <tbody>
-          <tr><td>{{描述}}</td><td><code>{{0x...}}</code></td><td><code>{{/idasql:xrefs}}</code></td></tr>
-          <!-- 补查不到的证据：<td class="pending">待核实</td> -->
-        </tbody>
-      </table>
+    <div class="block">
+      <h3>核心思路</h3>
+      <p>{{1 到 3 句:这个技术具体绕开了上面哪条限制,走的是哪条路}}</p>
+      <div class="diagram">
+        <!-- 思路图:被阻断的直连路径 vs. 绕行路径。blocked:true 的消息渲染成红色虚线 + 叉 -->
+        <script type="application/json" data-diagram="sequence">
+        {
+          "caption": "红色虚线叉 = 被策略阻断的直连;编号箭头 = 实际走通的绕行路径",
+          "actors": ["{{发起方}}", "{{中间方}}", "{{目的方}}"],
+          "messages": [
+            {"from": 0, "to": 2, "text": "{{想走但走不通的直连}}", "blocked": true},
+            {"from": 0, "to": 1, "text": "{{改走的第一跳}}", "step": 1},
+            {"from": 1, "to": 2, "text": "{{被转发到目的方}}", "step": 2}
+          ]
+        }
+        </script>
+      </div>
     </div>
 
-    <h3>本样本的实现细节</h3>
-    <p>{{与技术点库通用描述不同的地方：编码、密钥、记录类型、分段长度等}}</p>
+    <div class="block">
+      <h3>分步拆解</h3>
+      <p class="cap">编号与下面交互图 / 流程图里的编号、以及样本证据表的「对应步骤」列一一对应。</p>
+      <ol class="timeline">
+        <li><b>{{谁发起}}</b>:{{传了什么、对方怎么处理、下一步去哪——具体到一次调用 / 一次请求 / 一次内存写}}</li>
+        <li><b>{{下一步}}</b>:{{……}}</li>
+      </ol>
+    </div>
 
-    <h3>检测要点</h3>
-    <ul>
-      <li>网络侧：{{...}}</li>
-      <li>主机侧：{{...}}</li>
-      <li>样本侧：{{可交给 yara 的特征}}</li>
-    </ul>
+    <div class="block">
+      <h3>交互图</h3>
+      <p class="cap">{{怎么看这张图:一句话,如"自上而下是时间顺序,每条箭头是一次请求/应答"}}</p>
+      <div class="diagram">
+        <script type="application/json" data-diagram="sequence">
+        {
+          "caption": "{{一句话说明}}",
+          "actors": ["{{参与方1}}", "{{参与方2}}", "{{参与方3}}"],
+          "messages": [
+            {"from": 0, "to": 1, "text": "{{动作}}", "step": 1},
+            {"from": 1, "to": 2, "text": "{{动作}}", "step": 2},
+            {"from": 2, "to": 2, "text": "{{本地处理}}", "step": 3},
+            {"from": 2, "to": 0, "text": "{{返回}}", "step": 4}
+          ]
+        }
+        </script>
+      </div>
+    </div>
+
+    <div class="block">
+      <h3>流程图</h3>
+      <p class="cap">{{怎么看这张图:一句话,如"菱形是分支判断,黄框是入口与终点"}}</p>
+      <div class="diagram">
+        <script type="application/json" data-diagram="flow">
+        {
+          "caption": "{{一句话说明}}",
+          "nodes": [
+            {"id": "a", "type": "start", "text": "{{入口}}"},
+            {"id": "b", "type": "process", "text": "{{步骤}}"},
+            {"id": "c", "type": "decision", "text": "{{判断?}}"},
+            {"id": "d", "type": "process", "text": "{{分支一}}"},
+            {"id": "e", "type": "end", "text": "{{终点}}"}
+          ],
+          "edges": [
+            {"from": "a", "to": "b"},
+            {"from": "b", "to": "c"},
+            {"from": "c", "to": "d", "text": "是"},
+            {"from": "c", "to": "e", "text": "否"},
+            {"from": "d", "to": "b", "text": "循环"}
+          ]
+        }
+        </script>
+      </div>
+    </div>
+
+    <div class="block">
+      <h3>样本证据</h3>
+      <div class="tablewrap">
+        <table>
+          <thead><tr><th>证据</th><th>地址 / 位置</th><th>来源查询</th><th>对应步骤</th></tr></thead>
+          <tbody>
+            <tr><td>{{描述}}</td><td><code>{{0x...}}</code></td><td><code>{{/idasql:xrefs}}</code></td><td>{{第 n 步}}</td></tr>
+            <!-- 补查不到的证据:<td class="pending">待核实</td> -->
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="block">
+      <h3>本样本的实现细节</h3>
+      <p>{{与技术点库通用描述不同的地方:编码、密钥、记录类型、分段长度等}}</p>
+    </div>
+
+    <div class="block">
+      <h3>例子</h3>
+      <div class="example">
+        <p class="cap"><b>通用演示</b>(来自技术点库,只演示机制本身、用无害输入):</p>
+        <pre>{{从 library/&lt;slug&gt;.md「动手实验」复制的最小代码}}</pre>
+        <p class="io"><b>预期输出:</b> {{对照结果}}</p>
+        <p class="cap"><b>本样本里这一步长这样</b>(来自本会话查询,伪代码 / 解密出的字符串):</p>
+        <pre>{{pseudocode_grep / decompile_lines 截取的几行}}</pre>
+      </div>
+    </div>
+
+    <div class="block">
+      <h3>检测要点</h3>
+      <div class="cols3">
+        <div class="col"><h4>网络侧</h4><ul><li>{{...}}</li></ul></div>
+        <div class="col"><h4>主机侧</h4><ul><li>{{...}}</li></ul></div>
+        <div class="col"><h4>样本侧</h4><ul><li>{{可交给 yara 的特征}}</li></ul></div>
+      </div>
+    </div>
+
+    <div class="block">
+      <h3>延伸学习</h3>
+      <p>库里有条目时链接:<a href="{{library/<slug>.md}}">{{技术点库条目}}</a>,其「动手实验」小节可以自己跑一遍。</p>
+    </div>
   </section>
   <!-- CARD:END -->
 
 </main>
+
+<!-- ===== 图示渲染器:与 report/report.html 里的同一段必须逐字一致 ===== -->
+<script>
+(function () {
+  "use strict";
+  var FS = 12;
+  var FONT = "Consolas, 'Cascadia Mono', 'IBM Plex Mono', monospace";
+  // 全角/CJK 字符按 FS 宽、其余按半角 ~7px,否则中文会被严重低估导致盒子撑爆
+  var WIDE = /[ᄀ-ᅟ⺀-〿぀-㏿㐀-䶿一-鿿ꀀ-꓏가-힣豈-﫿︰-﹏＀-｠￠-￦]/;
+  function esc(s) {
+    return String(s == null ? "" : s).replace(/[&<>"]/g, function (c) {
+      return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c];
+    });
+  }
+  function tw(s) {
+    s = String(s == null ? "" : s); var w = 0;
+    for (var i = 0; i < s.length; i++) w += WIDE.test(s[i]) ? FS : 7;
+    return w;
+  }
+  function svg(w, h, body, label) {
+    w = Math.ceil(w); h = Math.ceil(h);
+    return '<svg viewBox="0 0 ' + w + " " + h + '" width="' + w + '" height="' + h +
+      '" role="img" aria-label="' + esc(label || "diagram") +
+      '" font-family="' + FONT + '" font-size="' + FS + '" fill="currentColor">' +
+      '<defs><marker id="md-arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">' +
+      '<path d="M0,0 L10,5 L0,10 z" fill="currentColor"/></marker></defs>' + body + "</svg>";
+  }
+  function badge(x, y, n) {
+    return '<circle cx="' + x + '" cy="' + y + '" r="9" fill="var(--sun)" stroke="currentColor" stroke-width="1.5"/>' +
+      '<text x="' + x + '" y="' + y + '" text-anchor="middle" dominant-baseline="central" font-weight="700" fill="#1A1A1A" font-size="10">' + esc(n) + "</text>";
+  }
+
+  /* ---- 交互图 / 时序图(参与方 = 竖泳道,消息 = 带编号的横箭头) ---- */
+  function sequence(spec) {
+    var actors = spec.actors || [], msgs = spec.messages || [];
+    var topH = 40, rowH = 48, headPad = 18, botPad = 26, pad = 10;
+    var aw = actors.map(function (a) { return Math.max(96, tw(a) + 24); });
+    var maxLbl = 150;
+    msgs.forEach(function (m) { if (m.from !== m.to) maxLbl = Math.max(maxLbl, tw(m.text) + 34); });
+    var gap = Math.max(maxLbl, 180);
+    var cx = [], cur = aw.length ? aw[0] / 2 + 6 : 0;
+    if (aw.length) cx.push(cur);
+    for (var i = 1; i < actors.length; i++) {
+      var need = (aw[i - 1] + aw[i]) / 2 + 30;
+      cur += Math.max(gap, need); cx.push(cur);
+    }
+    var W = actors.length ? cur + aw[actors.length - 1] / 2 + 6 : 240;
+    var loopR = 28;
+    msgs.forEach(function (m) { if (m.from === m.to) W = Math.max(W, cx[m.from] + loopR + 10 + tw(m.text) + pad); });
+    var bodyBottom = topH + headPad + rowH * msgs.length + botPad;
+    var b = "";
+    for (i = 0; i < actors.length; i++) {
+      var w = aw[i], x = cx[i] - w / 2;
+      b += '<line x1="' + cx[i] + '" y1="' + topH + '" x2="' + cx[i] + '" y2="' + (bodyBottom - 10) +
+        '" stroke="currentColor" stroke-dasharray="3 4" opacity="0.5"/>';
+      b += '<rect x="' + x + '" y="6" width="' + w + '" height="' + (topH - 12) +
+        '" rx="2" fill="var(--sky)" stroke="currentColor" stroke-width="2"/>';
+      b += '<text x="' + cx[i] + '" y="' + (topH / 2) + '" text-anchor="middle" dominant-baseline="central" font-weight="700" fill="#1A1A1A">' +
+        esc(actors[i]) + "</text>";
+    }
+    var ctr = 0;
+    for (i = 0; i < msgs.length; i++) {
+      var m = msgs[i], y = topH + headPad + rowH * i + rowH / 2;
+      var fromX = cx[m.from], toX = cx[m.to];
+      var blocked = (m.from !== m.to) && !!m.blocked;
+      if (!blocked) ctr++;
+      var num = (m.step != null ? m.step : ctr);
+      if (m.from === m.to) { // 自环:本地处理
+        b += '<path d="M' + fromX + "," + (y - 9) + " h" + loopR + " v18 h-" + loopR +
+          '" fill="none" stroke="currentColor" stroke-width="2" marker-end="url(#md-arr)"/>';
+        b += '<text x="' + (fromX + loopR + 8) + '" y="' + y + '" dominant-baseline="central">' + esc(m.text) + "</text>";
+        b += badge(fromX + 13, y + 16, num);
+        continue;
+      }
+      var color = blocked ? "var(--bad)" : "currentColor", midX = (fromX + toX) / 2;
+      b += '<line x1="' + fromX + '" y1="' + y + '" x2="' + toX + '" y2="' + y + '" stroke="' + color + '" stroke-width="2"' +
+        (blocked ? ' stroke-dasharray="6 5"' : ' marker-end="url(#md-arr)"') + "/>";
+      b += '<text x="' + midX + '" y="' + (y - 9) + '" text-anchor="middle" fill="' + (blocked ? "var(--bad)" : "currentColor") + '"' +
+        (blocked ? ' font-weight="700"' : "") + ">" + esc(m.text) + "</text>";
+      if (blocked) { // 被阻断:红色虚线 + 叉,不编号
+        b += '<g stroke="var(--bad)" stroke-width="2.5"><line x1="' + (midX - 7) + '" y1="' + (y - 7) + '" x2="' + (midX + 7) + '" y2="' + (y + 7) +
+          '"/><line x1="' + (midX - 7) + '" y1="' + (y + 7) + '" x2="' + (midX + 7) + '" y2="' + (y - 7) + '"/></g>';
+        continue;
+      }
+      b += badge(fromX + (toX > fromX ? 11 : -11), y + 13, num);
+    }
+    return svg(W, bodyBottom, b, spec.caption || "时序交互图");
+  }
+
+  /* ---- 流程图(节点分层自顶向下;start/end 圆角黄框、process 方框、decision 菱形;回边走右侧 gutter) ---- */
+  function flow(spec) {
+    var nodes = spec.nodes || [], edges = spec.edges || [];
+    var idx = {}; nodes.forEach(function (n, i) { idx[n.id] = i; });
+    var adj = nodes.map(function () { return []; });
+    edges.forEach(function (e) { var a = idx[e.from], c = idx[e.to]; if (a != null && c != null) adj[a].push(c); });
+    var stt = nodes.map(function () { return 0; }), isBack = {};
+    (function () {
+      function dfs(u) {
+        stt[u] = 1;
+        for (var k = 0; k < adj[u].length; k++) {
+          var v = adj[u][k];
+          if (stt[v] === 1) isBack[u + ">" + v] = 1;
+          else if (stt[v] === 0) dfs(v);
+        }
+        stt[u] = 2;
+      }
+      for (var i = 0; i < nodes.length; i++) if (stt[i] === 0) dfs(i);
+    })();
+    function backEdge(e) { var a = idx[e.from], c = idx[e.to]; return !!isBack[a + ">" + c]; }
+    var depth = nodes.map(function () { return 0; });
+    for (var it = 0; it < nodes.length; it++) {
+      var changed = false;
+      edges.forEach(function (e) {
+        if (backEdge(e)) return;
+        var a = idx[e.from], c = idx[e.to];
+        if (a == null || c == null) return;
+        if (depth[c] < depth[a] + 1) { depth[c] = depth[a] + 1; changed = true; }
+      });
+      if (!changed) break;
+    }
+    var rows = {}, maxd = 0;
+    nodes.forEach(function (n, i) { var d = depth[i]; (rows[d] = rows[d] || []).push(i); if (d > maxd) maxd = d; });
+    var sz = nodes.map(function (n) {
+      var w = Math.max(120, tw(n.text) + 30), h = 44;
+      if (n.type === "decision") { w = Math.max(132, tw(n.text) + 56); h = 62; }
+      return { w: w, h: h };
+    });
+    var gapX = 44, rowGap = 86, pad = 22;
+    var rowW = [], maxRowW = 0, d, r;
+    for (d = 0; d <= maxd; d++) {
+      r = rows[d] || []; var wsum = 0;
+      r.forEach(function (i) { wsum += sz[i].w; });
+      wsum += gapX * Math.max(0, r.length - 1); rowW[d] = wsum; if (wsum > maxRowW) maxRowW = wsum;
+    }
+    var contentW = maxRowW + pad * 2, cxc = contentW / 2;
+    var pos = nodes.map(function () { return null; });
+    var yCur = pad;
+    for (d = 0; d <= maxd; d++) {
+      r = rows[d] || [];
+      var xx = cxc - rowW[d] / 2, maxh = 0;
+      r.forEach(function (i) { var s = sz[i]; pos[i] = { x: xx + s.w / 2, y: yCur + s.h / 2, w: s.w, h: s.h }; xx += s.w + gapX; if (s.h > maxh) maxh = s.h; });
+      yCur += maxh + rowGap;
+    }
+    var H = yCur - rowGap + pad;
+    var maxRight = pad;
+    nodes.forEach(function (n, i) { var p = pos[i]; if (p) maxRight = Math.max(maxRight, p.x + p.w / 2); });
+    var W = contentW;
+    var b = "";
+    edges.forEach(function (e) {
+      var a = idx[e.from], c = idx[e.to]; if (a == null || c == null) return;
+      var p = pos[a], q = pos[c]; if (!p || !q) return;
+      var back = backEdge(e);
+      var col = e.blocked ? "var(--bad)" : "currentColor";
+      var dash = (e.blocked || back) ? ' stroke-dasharray="6 5"' : "";
+      var lx, ly, path, labelW = e.text ? tw(e.text) : 0;
+      if (back) { // 走最右侧 gutter,横段只在行间空隙里走,不穿过任何节点
+        var gx = maxRight + 36;
+        var syb = p.y + p.h / 2, tyb = q.y - q.h / 2;
+        var gBelow = syb + rowGap * 0.42, gAbove = tyb - rowGap * 0.42;
+        path = "M" + p.x + "," + syb + " V" + gBelow + " H" + gx + " V" + gAbove + " H" + q.x + " V" + tyb;
+        lx = gx + 10 + labelW / 2; ly = (gBelow + gAbove) / 2;
+        W = Math.max(W, gx + 10 + labelW + pad);
+      } else {
+        var sy = p.y + p.h / 2, ty = q.y - q.h / 2;
+        if (Math.abs(p.x - q.x) < 1) path = "M" + p.x + "," + sy + " V" + ty;
+        else { var my = (sy + ty) / 2; path = "M" + p.x + "," + sy + " V" + my + " H" + q.x + " V" + ty; }
+        lx = (p.x + q.x) / 2; ly = (sy + ty) / 2;
+      }
+      b += '<path d="' + path + '" fill="none" stroke="' + col + '" stroke-width="2"' + dash + ' marker-end="url(#md-arr)"/>';
+      if (e.text) {
+        var ww = labelW + 12;
+        b += '<rect x="' + (lx - ww / 2) + '" y="' + (ly - 9) + '" width="' + ww + '" height="18" rx="2" fill="var(--fog)" stroke="currentColor" stroke-width="1"/>';
+        b += '<text x="' + lx + '" y="' + ly + '" text-anchor="middle" dominant-baseline="central" fill="' + (e.blocked ? "var(--bad)" : "currentColor") + '">' + esc(e.text) + "</text>";
+      }
+    });
+    nodes.forEach(function (n, i) {
+      var p = pos[i]; if (!p) return;
+      var x = p.x - p.w / 2, y = p.y - p.h / 2;
+      var isTerm = n.type === "start" || n.type === "end";
+      var fill = isTerm ? "var(--sun)" : (n.type === "decision" ? "var(--soft)" : "var(--card)");
+      if (n.type === "decision") {
+        var hw = p.w / 2, hh = p.h / 2;
+        b += '<polygon points="' + p.x + "," + (p.y - hh) + " " + (p.x + hw) + "," + p.y + " " + p.x + "," + (p.y + hh) + " " + (p.x - hw) + "," + p.y +
+          '" fill="' + fill + '" stroke="currentColor" stroke-width="2"/>';
+      } else {
+        var rx2 = isTerm ? p.h / 2 : 2;
+        b += '<rect x="' + x + '" y="' + y + '" width="' + p.w + '" height="' + p.h + '" rx="' + rx2 + '" fill="' + fill + '" stroke="currentColor" stroke-width="2"/>';
+      }
+      b += '<text x="' + p.x + '" y="' + p.y + '" text-anchor="middle" dominant-baseline="central"' + (isTerm ? ' font-weight="700" fill="#1A1A1A"' : "") + ">" + esc(n.text) + "</text>";
+    });
+    return svg(W, H, b, spec.caption || "流程图");
+  }
+
+  function render() {
+    var slots = document.querySelectorAll("script[data-diagram]");
+    for (var i = 0; i < slots.length; i++) {
+      var el = slots[i], kind = el.getAttribute("data-diagram"), spec;
+      try { spec = JSON.parse(el.textContent); } catch (e) { continue; }
+      var out;
+      try { out = kind === "sequence" ? sequence(spec) : flow(spec); } catch (e2) { continue; }
+      var box = document.createElement("div"); box.className = "diagram-svg"; box.innerHTML = out;
+      el.parentNode.insertBefore(box, el);
+    }
+  }
+  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", render);
+  else render();
+})();
+</script>
+
 </body>
 </html>

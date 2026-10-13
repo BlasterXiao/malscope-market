@@ -1,7 +1,7 @@
 {
   "name": "report",
-  "version": "0.1.0",
-  "description": "把一次样本分析整理成 HTML 或 Markdown 记录",
+  "version": "0.2.0",
+  "description": "把一次样本分析整理成带行为总流程、分析思路、函数调用关系三张图的 HTML 或 Markdown 记录",
   "author": {
     "name": "xiaopotianhuang"
   },

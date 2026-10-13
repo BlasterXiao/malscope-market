@@ -7,24 +7,24 @@
 <style>
 :root {
   --bg: #F4EFEA; --card: #FFFFFF; --fog: #F8F8F7; --ink: #383838; --muted: #6E6A66;
-  --line: #000000; --sun: #FFDE00; --sky: #6FC2FF; --soft: #EBF9FF; --grid: #E4D6C3;
+  --line: #000000; --sun: #FFDE00; --sky: #6FC2FF; --soft: #EBF9FF; --grid: #E4D6C3; --bad: #B3261E;
   --mono: "IBM Plex Mono", "Cascadia Mono", Consolas, monospace;
   --sans: "Noto Sans SC", "Microsoft YaHei", "PingFang SC", sans-serif;
 }
 @media (prefers-color-scheme: dark) {
   :root {
     --bg: #1C1A18; --card: #262321; --fog: #2D2A27; --ink: #ECE6DF; --muted: #A9A29A;
-    --line: #ECE6DF; --soft: #1D2A33; --grid: #34302B;
+    --line: #ECE6DF; --soft: #1D2A33; --grid: #34302B; --bad: #FF8A80;
     color-scheme: dark;
   }
 }
 * { box-sizing: border-box; }
 body { margin: 0; background: var(--bg); color: var(--ink); font: 15px/1.6 var(--sans); }
 .eyebrow { background: var(--sun); color: #1A1A1A; border-bottom: 2px solid #000; font: 700 12px/16px var(--mono); letter-spacing: .08em; padding: 12px 16px; text-align: center; }
-main { max-width: 960px; margin: 0 auto; padding: 40px 16px 80px; display: flex; flex-direction: column; gap: 40px; }
+main { max-width: 980px; margin: 0 auto; padding: 40px 16px 80px; display: flex; flex-direction: column; gap: 40px; }
 h1 { font: 700 clamp(28px, 5vw, 44px)/1.2 var(--mono); margin: 0; }
 h2 { font: 700 20px/1.3 var(--mono); margin: 0; border-top: 2px solid var(--line); padding-top: 14px; }
-p { margin: 0; max-width: 72ch; }
+p { margin: 0; max-width: 74ch; }
 code, pre { font-family: var(--mono); font-size: .92em; }
 section { display: flex; flex-direction: column; gap: 14px; }
 header.top { border: 2px solid var(--line); border-radius: 2px; padding: 28px; display: flex; flex-direction: column; gap: 14px;
@@ -39,6 +39,13 @@ tr:last-child td { border-bottom: 0; }
 ol.steps { margin: 0; padding-left: 1.4em; display: flex; flex-direction: column; gap: 10px; }
 pre { margin: 0; background: var(--fog); border: 2px solid var(--line); border-radius: 2px; padding: 16px; overflow-x: auto; }
 .box { background: var(--card); border: 2px solid var(--line); border-radius: 2px; padding: 20px; }
+/* 图示容器:内联 SVG 由下方渲染器生成 */
+.diagram { border: 2px solid var(--line); border-radius: 2px; background: var(--fog); padding: 14px; display: flex; flex-direction: column; gap: 10px; }
+.diagram-svg { overflow-x: auto; }
+.diagram-svg svg { display: block; max-width: 100%; height: auto; }
+.cap { font: 12px/1.5 var(--mono); color: var(--muted); }
+.cap b { color: var(--ink); }
+a { color: inherit; text-underline-offset: 3px; }
 </style>
 </head>
 <body>
@@ -56,14 +63,84 @@ pre { margin: 0; background: var(--fog); border: 2px solid var(--line); border-r
   </header>
 
   <section>
+    <h2>样本行为总流程</h2>
+    <p class="cap">样本从入口到最终目的做了什么,只画本会话确认过的行为;未确认的不画。</p>
+    <div class="diagram">
+      <script type="application/json" data-diagram="flow">
+      {
+        "caption": "样本行为:入口 → 各阶段 → C2 / 外传",
+        "nodes": [
+          {"id": "s", "type": "start", "text": "{{入口:释放 / 加载}}"},
+          {"id": "a", "type": "process", "text": "{{阶段1}}"},
+          {"id": "b", "type": "process", "text": "{{阶段2}}"},
+          {"id": "e", "type": "end", "text": "{{C2 / 外传 / 持久化}}"}
+        ],
+        "edges": [
+          {"from": "s", "to": "a"},
+          {"from": "a", "to": "b", "text": "{{条件}}"},
+          {"from": "b", "to": "e"}
+        ]
+      }
+      </script>
+    </div>
+  </section>
+
+  <section>
+    <h2>分析思路</h2>
+    <p class="cap">这次分析是怎么从初步分诊一步步走到结论的——给复核的人一张"路线图"。</p>
+    <div class="diagram">
+      <script type="application/json" data-diagram="flow">
+      {
+        "caption": "分析路线:分诊 → 定位 → 还原 → 结论",
+        "nodes": [
+          {"id": "t", "type": "start", "text": "分诊:{{壳 / 导入 / 字符串}}"},
+          {"id": "l", "type": "process", "text": "定位候选函数"},
+          {"id": "q", "type": "decision", "text": "是否混淆 / 加密?"},
+          {"id": "d", "type": "process", "text": "{{解码 / 还原手段}}"},
+          {"id": "r", "type": "process", "text": "写回改名 + 注释"},
+          {"id": "c", "type": "end", "text": "定性结论"}
+        ],
+        "edges": [
+          {"from": "t", "to": "l"},
+          {"from": "l", "to": "q"},
+          {"from": "q", "to": "d", "text": "是"},
+          {"from": "d", "to": "l", "text": "回填再查"},
+          {"from": "q", "to": "r", "text": "否"},
+          {"from": "r", "to": "c"}
+        ]
+      }
+      </script>
+    </div>
+  </section>
+
+  <section>
     <h2>分析步骤</h2>
     <ol class="steps">
-      <li><b>{{做了什么}}</b>：<code>{{命令}}</code>，{{关键结果}}</li>
+      <li><b>{{做了什么}}</b>:<code>{{命令}}</code>,{{关键结果}}</li>
     </ol>
   </section>
 
   <section>
-    <h2>关键函数</h2>
+    <h2>关键函数调用关系</h2>
+    <p class="cap">本会话已重命名 / 已确认的关键函数之间怎么调;节点名用新名,未确认的调用不画。</p>
+    <div class="diagram">
+      <script type="application/json" data-diagram="flow">
+      {
+        "caption": "关键函数调用关系(节点 = 已确认函数)",
+        "nodes": [
+          {"id": "main", "type": "start", "text": "{{入口函数}}"},
+          {"id": "f1", "type": "process", "text": "{{新名1}}"},
+          {"id": "f2", "type": "process", "text": "{{新名2}}"},
+          {"id": "f3", "type": "process", "text": "{{新名3}}"}
+        ],
+        "edges": [
+          {"from": "main", "to": "f1", "text": "{{调用}}"},
+          {"from": "f1", "to": "f2"},
+          {"from": "f1", "to": "f3"}
+        ]
+      }
+      </script>
+    </div>
     <div class="tablewrap">
       <table>
         <thead><tr><th>地址</th><th>原名</th><th>新名</th><th>作用</th></tr></thead>
@@ -72,7 +149,7 @@ pre { margin: 0; background: var(--fog); border: 2px solid var(--line); border-r
         </tbody>
       </table>
     </div>
-    <p>写回：改名 {{n}} 处，注释 {{n}} 处，类型 {{n}} 处，{{已保存 / 未保存}}。</p>
+    <p>写回:改名 {{n}} 处,注释 {{n}} 处,类型 {{n}} 处,{{已保存 / 未保存}}。</p>
   </section>
 
   <section>
@@ -97,7 +174,7 @@ pre { margin: 0; background: var(--fog); border: 2px solid var(--line); border-r
         </tbody>
       </table>
     </div>
-    <p>详细记录：<a href="techniques.html">techniques.html</a></p>
+    <p>详细记录:<a href="techniques.html">techniques.html</a></p>
   </section>
 
   <section>
@@ -116,5 +193,214 @@ pre { margin: 0; background: var(--fog); border: 2px solid var(--line); border-r
   </section>
 
 </main>
+
+<!-- ===== 图示渲染器:与 techniques/record.html 里的同一段必须逐字一致 ===== -->
+<script>
+(function () {
+  "use strict";
+  var FS = 12;
+  var FONT = "Consolas, 'Cascadia Mono', 'IBM Plex Mono', monospace";
+  // 全角/CJK 字符按 FS 宽、其余按半角 ~7px,否则中文会被严重低估导致盒子撑爆
+  var WIDE = /[ᄀ-ᅟ⺀-〿぀-㏿㐀-䶿一-鿿ꀀ-꓏가-힣豈-﫿︰-﹏＀-｠￠-￦]/;
+  function esc(s) {
+    return String(s == null ? "" : s).replace(/[&<>"]/g, function (c) {
+      return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c];
+    });
+  }
+  function tw(s) {
+    s = String(s == null ? "" : s); var w = 0;
+    for (var i = 0; i < s.length; i++) w += WIDE.test(s[i]) ? FS : 7;
+    return w;
+  }
+  function svg(w, h, body, label) {
+    w = Math.ceil(w); h = Math.ceil(h);
+    return '<svg viewBox="0 0 ' + w + " " + h + '" width="' + w + '" height="' + h +
+      '" role="img" aria-label="' + esc(label || "diagram") +
+      '" font-family="' + FONT + '" font-size="' + FS + '" fill="currentColor">' +
+      '<defs><marker id="md-arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">' +
+      '<path d="M0,0 L10,5 L0,10 z" fill="currentColor"/></marker></defs>' + body + "</svg>";
+  }
+  function badge(x, y, n) {
+    return '<circle cx="' + x + '" cy="' + y + '" r="9" fill="var(--sun)" stroke="currentColor" stroke-width="1.5"/>' +
+      '<text x="' + x + '" y="' + y + '" text-anchor="middle" dominant-baseline="central" font-weight="700" fill="#1A1A1A" font-size="10">' + esc(n) + "</text>";
+  }
+
+  /* ---- 交互图 / 时序图(参与方 = 竖泳道,消息 = 带编号的横箭头) ---- */
+  function sequence(spec) {
+    var actors = spec.actors || [], msgs = spec.messages || [];
+    var topH = 40, rowH = 48, headPad = 18, botPad = 26, pad = 10;
+    var aw = actors.map(function (a) { return Math.max(96, tw(a) + 24); });
+    var maxLbl = 150;
+    msgs.forEach(function (m) { if (m.from !== m.to) maxLbl = Math.max(maxLbl, tw(m.text) + 34); });
+    var gap = Math.max(maxLbl, 180);
+    var cx = [], cur = aw.length ? aw[0] / 2 + 6 : 0;
+    if (aw.length) cx.push(cur);
+    for (var i = 1; i < actors.length; i++) {
+      var need = (aw[i - 1] + aw[i]) / 2 + 30;
+      cur += Math.max(gap, need); cx.push(cur);
+    }
+    var W = actors.length ? cur + aw[actors.length - 1] / 2 + 6 : 240;
+    var loopR = 28;
+    msgs.forEach(function (m) { if (m.from === m.to) W = Math.max(W, cx[m.from] + loopR + 10 + tw(m.text) + pad); });
+    var bodyBottom = topH + headPad + rowH * msgs.length + botPad;
+    var b = "";
+    for (i = 0; i < actors.length; i++) {
+      var w = aw[i], x = cx[i] - w / 2;
+      b += '<line x1="' + cx[i] + '" y1="' + topH + '" x2="' + cx[i] + '" y2="' + (bodyBottom - 10) +
+        '" stroke="currentColor" stroke-dasharray="3 4" opacity="0.5"/>';
+      b += '<rect x="' + x + '" y="6" width="' + w + '" height="' + (topH - 12) +
+        '" rx="2" fill="var(--sky)" stroke="currentColor" stroke-width="2"/>';
+      b += '<text x="' + cx[i] + '" y="' + (topH / 2) + '" text-anchor="middle" dominant-baseline="central" font-weight="700" fill="#1A1A1A">' +
+        esc(actors[i]) + "</text>";
+    }
+    var ctr = 0;
+    for (i = 0; i < msgs.length; i++) {
+      var m = msgs[i], y = topH + headPad + rowH * i + rowH / 2;
+      var fromX = cx[m.from], toX = cx[m.to];
+      var blocked = (m.from !== m.to) && !!m.blocked;
+      if (!blocked) ctr++;
+      var num = (m.step != null ? m.step : ctr);
+      if (m.from === m.to) { // 自环:本地处理
+        b += '<path d="M' + fromX + "," + (y - 9) + " h" + loopR + " v18 h-" + loopR +
+          '" fill="none" stroke="currentColor" stroke-width="2" marker-end="url(#md-arr)"/>';
+        b += '<text x="' + (fromX + loopR + 8) + '" y="' + y + '" dominant-baseline="central">' + esc(m.text) + "</text>";
+        b += badge(fromX + 13, y + 16, num);
+        continue;
+      }
+      var color = blocked ? "var(--bad)" : "currentColor", midX = (fromX + toX) / 2;
+      b += '<line x1="' + fromX + '" y1="' + y + '" x2="' + toX + '" y2="' + y + '" stroke="' + color + '" stroke-width="2"' +
+        (blocked ? ' stroke-dasharray="6 5"' : ' marker-end="url(#md-arr)"') + "/>";
+      b += '<text x="' + midX + '" y="' + (y - 9) + '" text-anchor="middle" fill="' + (blocked ? "var(--bad)" : "currentColor") + '"' +
+        (blocked ? ' font-weight="700"' : "") + ">" + esc(m.text) + "</text>";
+      if (blocked) { // 被阻断:红色虚线 + 叉,不编号
+        b += '<g stroke="var(--bad)" stroke-width="2.5"><line x1="' + (midX - 7) + '" y1="' + (y - 7) + '" x2="' + (midX + 7) + '" y2="' + (y + 7) +
+          '"/><line x1="' + (midX - 7) + '" y1="' + (y + 7) + '" x2="' + (midX + 7) + '" y2="' + (y - 7) + '"/></g>';
+        continue;
+      }
+      b += badge(fromX + (toX > fromX ? 11 : -11), y + 13, num);
+    }
+    return svg(W, bodyBottom, b, spec.caption || "时序交互图");
+  }
+
+  /* ---- 流程图(节点分层自顶向下;start/end 圆角黄框、process 方框、decision 菱形;回边走右侧 gutter) ---- */
+  function flow(spec) {
+    var nodes = spec.nodes || [], edges = spec.edges || [];
+    var idx = {}; nodes.forEach(function (n, i) { idx[n.id] = i; });
+    var adj = nodes.map(function () { return []; });
+    edges.forEach(function (e) { var a = idx[e.from], c = idx[e.to]; if (a != null && c != null) adj[a].push(c); });
+    var stt = nodes.map(function () { return 0; }), isBack = {};
+    (function () {
+      function dfs(u) {
+        stt[u] = 1;
+        for (var k = 0; k < adj[u].length; k++) {
+          var v = adj[u][k];
+          if (stt[v] === 1) isBack[u + ">" + v] = 1;
+          else if (stt[v] === 0) dfs(v);
+        }
+        stt[u] = 2;
+      }
+      for (var i = 0; i < nodes.length; i++) if (stt[i] === 0) dfs(i);
+    })();
+    function backEdge(e) { var a = idx[e.from], c = idx[e.to]; return !!isBack[a + ">" + c]; }
+    var depth = nodes.map(function () { return 0; });
+    for (var it = 0; it < nodes.length; it++) {
+      var changed = false;
+      edges.forEach(function (e) {
+        if (backEdge(e)) return;
+        var a = idx[e.from], c = idx[e.to];
+        if (a == null || c == null) return;
+        if (depth[c] < depth[a] + 1) { depth[c] = depth[a] + 1; changed = true; }
+      });
+      if (!changed) break;
+    }
+    var rows = {}, maxd = 0;
+    nodes.forEach(function (n, i) { var d = depth[i]; (rows[d] = rows[d] || []).push(i); if (d > maxd) maxd = d; });
+    var sz = nodes.map(function (n) {
+      var w = Math.max(120, tw(n.text) + 30), h = 44;
+      if (n.type === "decision") { w = Math.max(132, tw(n.text) + 56); h = 62; }
+      return { w: w, h: h };
+    });
+    var gapX = 44, rowGap = 86, pad = 22;
+    var rowW = [], maxRowW = 0, d, r;
+    for (d = 0; d <= maxd; d++) {
+      r = rows[d] || []; var wsum = 0;
+      r.forEach(function (i) { wsum += sz[i].w; });
+      wsum += gapX * Math.max(0, r.length - 1); rowW[d] = wsum; if (wsum > maxRowW) maxRowW = wsum;
+    }
+    var contentW = maxRowW + pad * 2, cxc = contentW / 2;
+    var pos = nodes.map(function () { return null; });
+    var yCur = pad;
+    for (d = 0; d <= maxd; d++) {
+      r = rows[d] || [];
+      var xx = cxc - rowW[d] / 2, maxh = 0;
+      r.forEach(function (i) { var s = sz[i]; pos[i] = { x: xx + s.w / 2, y: yCur + s.h / 2, w: s.w, h: s.h }; xx += s.w + gapX; if (s.h > maxh) maxh = s.h; });
+      yCur += maxh + rowGap;
+    }
+    var H = yCur - rowGap + pad;
+    var maxRight = pad;
+    nodes.forEach(function (n, i) { var p = pos[i]; if (p) maxRight = Math.max(maxRight, p.x + p.w / 2); });
+    var W = contentW;
+    var b = "";
+    edges.forEach(function (e) {
+      var a = idx[e.from], c = idx[e.to]; if (a == null || c == null) return;
+      var p = pos[a], q = pos[c]; if (!p || !q) return;
+      var back = backEdge(e);
+      var col = e.blocked ? "var(--bad)" : "currentColor";
+      var dash = (e.blocked || back) ? ' stroke-dasharray="6 5"' : "";
+      var lx, ly, path, labelW = e.text ? tw(e.text) : 0;
+      if (back) { // 走最右侧 gutter,横段只在行间空隙里走,不穿过任何节点
+        var gx = maxRight + 36;
+        var syb = p.y + p.h / 2, tyb = q.y - q.h / 2;
+        var gBelow = syb + rowGap * 0.42, gAbove = tyb - rowGap * 0.42;
+        path = "M" + p.x + "," + syb + " V" + gBelow + " H" + gx + " V" + gAbove + " H" + q.x + " V" + tyb;
+        lx = gx + 10 + labelW / 2; ly = (gBelow + gAbove) / 2;
+        W = Math.max(W, gx + 10 + labelW + pad);
+      } else {
+        var sy = p.y + p.h / 2, ty = q.y - q.h / 2;
+        if (Math.abs(p.x - q.x) < 1) path = "M" + p.x + "," + sy + " V" + ty;
+        else { var my = (sy + ty) / 2; path = "M" + p.x + "," + sy + " V" + my + " H" + q.x + " V" + ty; }
+        lx = (p.x + q.x) / 2; ly = (sy + ty) / 2;
+      }
+      b += '<path d="' + path + '" fill="none" stroke="' + col + '" stroke-width="2"' + dash + ' marker-end="url(#md-arr)"/>';
+      if (e.text) {
+        var ww = labelW + 12;
+        b += '<rect x="' + (lx - ww / 2) + '" y="' + (ly - 9) + '" width="' + ww + '" height="18" rx="2" fill="var(--fog)" stroke="currentColor" stroke-width="1"/>';
+        b += '<text x="' + lx + '" y="' + ly + '" text-anchor="middle" dominant-baseline="central" fill="' + (e.blocked ? "var(--bad)" : "currentColor") + '">' + esc(e.text) + "</text>";
+      }
+    });
+    nodes.forEach(function (n, i) {
+      var p = pos[i]; if (!p) return;
+      var x = p.x - p.w / 2, y = p.y - p.h / 2;
+      var isTerm = n.type === "start" || n.type === "end";
+      var fill = isTerm ? "var(--sun)" : (n.type === "decision" ? "var(--soft)" : "var(--card)");
+      if (n.type === "decision") {
+        var hw = p.w / 2, hh = p.h / 2;
+        b += '<polygon points="' + p.x + "," + (p.y - hh) + " " + (p.x + hw) + "," + p.y + " " + p.x + "," + (p.y + hh) + " " + (p.x - hw) + "," + p.y +
+          '" fill="' + fill + '" stroke="currentColor" stroke-width="2"/>';
+      } else {
+        var rx2 = isTerm ? p.h / 2 : 2;
+        b += '<rect x="' + x + '" y="' + y + '" width="' + p.w + '" height="' + p.h + '" rx="' + rx2 + '" fill="' + fill + '" stroke="currentColor" stroke-width="2"/>';
+      }
+      b += '<text x="' + p.x + '" y="' + p.y + '" text-anchor="middle" dominant-baseline="central"' + (isTerm ? ' font-weight="700" fill="#1A1A1A"' : "") + ">" + esc(n.text) + "</text>";
+    });
+    return svg(W, H, b, spec.caption || "流程图");
+  }
+
+  function render() {
+    var slots = document.querySelectorAll("script[data-diagram]");
+    for (var i = 0; i < slots.length; i++) {
+      var el = slots[i], kind = el.getAttribute("data-diagram"), spec;
+      try { spec = JSON.parse(el.textContent); } catch (e) { continue; }
+      var out;
+      try { out = kind === "sequence" ? sequence(spec) : flow(spec); } catch (e2) { continue; }
+      var box = document.createElement("div"); box.className = "diagram-svg"; box.innerHTML = out;
+      el.parentNode.insertBefore(box, el);
+    }
+  }
+  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", render);
+  else render();
+})();
+</script>
+
 </body>
 </html>
