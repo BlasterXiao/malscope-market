@@ -1,7 +1,7 @@
 {
   "name": "techniques",
-  "version": "0.1.0",
-  "description": "提取样本技术点，标注 ATT&CK，生成 HTML 详细记录",
+  "version": "0.2.0",
+  "description": "提取样本技术点，标注 ATT&CK，生成可逐步理解、能动手实验的 HTML 详细记录，并登记跨样本的技术关联索引",
   "author": {
     "name": "xiaopotianhuang"
   },

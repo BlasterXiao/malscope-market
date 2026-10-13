@@ -1,0 +1,156 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>技术点关联索引</title>
+<style>
+:root {
+  --bg: #F4EFEA; --card: #FFFFFF; --fog: #F8F8F7; --ink: #383838; --muted: #6E6A66;
+  --line: #000000; --sun: #FFDE00; --sky: #6FC2FF; --sky-strong: #2BA5FF; --soft: #EBF9FF; --grid: #E4D6C3;
+  --mono: "IBM Plex Mono", "Cascadia Mono", Consolas, monospace;
+  --sans: "Noto Sans SC", "Microsoft YaHei", "PingFang SC", sans-serif;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #1C1A18; --card: #262321; --fog: #2D2A27; --ink: #ECE6DF; --muted: #A9A29A;
+    --line: #ECE6DF; --soft: #1D2A33; --grid: #34302B;
+    color-scheme: dark;
+  }
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body { margin: 0; background: var(--bg); color: var(--ink); font: 15px/1.6 var(--sans); }
+.eyebrow { background: var(--sun); color: #1A1A1A; border-bottom: 2px solid #000; font: 700 12px/16px var(--mono); letter-spacing: .08em; padding: 12px 16px; text-align: center; }
+header.top {
+  position: sticky; top: 0; z-index: 5; background: var(--bg); border-bottom: 2px solid var(--line);
+  padding: 14px 24px; display: flex; flex-wrap: wrap; gap: 16px; align-items: center;
+}
+header.top h1 { margin: 0; font: 700 22px/1.2 var(--mono); letter-spacing: 1px; }
+header.top input {
+  flex: 1 1 280px; max-width: 460px; background: var(--fog); border: 2px solid var(--line); border-radius: 2px;
+  padding: 10px 14px; font: inherit; color: var(--ink);
+}
+header.top input:focus { outline: none; border-color: var(--sky-strong); }
+.viewtabs { display: flex; gap: 8px; }
+.viewtabs button {
+  font: 700 12px/1 var(--mono); text-transform: uppercase; letter-spacing: .06em; border: 2px solid var(--line);
+  border-radius: 2px; padding: 8px 12px; background: var(--card); color: var(--ink); cursor: pointer;
+}
+.viewtabs button.active { background: var(--sky); }
+main { max-width: 1100px; margin: 0 auto; padding: 32px 24px 96px; }
+code { font-family: var(--mono); font-size: .92em; }
+.chip { display: inline-block; font: 700 12px/1 var(--mono); padding: 5px 8px; border: 2px solid var(--line); border-radius: 2px; background: var(--sun); color: #1A1A1A; margin: 2px 4px 2px 0; }
+.tablewrap { overflow-x: auto; border: 2px solid var(--line); border-radius: 2px; background: var(--card); margin-top: 10px; }
+table { border-collapse: collapse; width: 100%; min-width: 520px; font-size: 14px; }
+th, td { text-align: left; vertical-align: top; padding: 9px 12px; border-bottom: 1px solid var(--grid); }
+th { font: 700 12px/16px var(--mono); letter-spacing: .06em; background: var(--soft); border-bottom: 2px solid var(--line); }
+tr:last-child td { border-bottom: 0; }
+section.block { background: var(--card); border: 2px solid var(--line); border-radius: 2px; padding: 20px 24px; margin-bottom: 24px; scroll-margin-top: 90px; }
+section.block h2 { margin: 0 0 4px; font: 700 18px/1.3 var(--mono); text-transform: uppercase; letter-spacing: .04em; }
+section.block .sub { color: var(--muted); font-size: 13px; margin-bottom: 10px; }
+a.lib-link { color: var(--ink); border-bottom: 2px solid var(--sky); text-decoration: none; }
+a.lib-link:hover { background: var(--sky); }
+.empty { padding: 24px; text-align: center; border: 2px dashed var(--line); color: var(--muted); }
+.hide { display: none !important; }
+@media (max-width: 640px) { main, header.top { padding-left: 16px; padding-right: 16px; } section.block { padding: 16px; } }
+</style>
+</head>
+<body>
+<div class="eyebrow">技术点关联索引 · 本地文件 · 不上传 · 不进插件仓库</div>
+<header class="top">
+  <h1>技术点关联索引</h1>
+  <input id="q" type="search" placeholder="搜技术点 / 组织 / 家族,例如 DNS隧道、CNC、VsTlsShell" autocomplete="off">
+  <div class="viewtabs">
+    <button type="button" id="tab-by-tech" class="active">按技术点</button>
+    <button type="button" id="tab-by-org">按组织</button>
+  </div>
+</header>
+<main id="main"></main>
+
+<script src="data/orgs.js"></script>
+<script src="data/techniques.js"></script>
+<script src="data/manifest.js"></script>
+<script>
+(() => {
+  const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+  const main = document.getElementById('main');
+  const failed = [];
+
+  function loadAll(files) {
+    return files.reduce((p, f) => p.then(() => new Promise(res => {
+      const s = document.createElement('script');
+      s.src = 'data/usage/' + f;
+      s.onload = res;
+      s.onerror = () => { failed.push(f); res(); };
+      document.body.appendChild(s);
+    })), Promise.resolve());
+  }
+
+  function orgName(id) { return FT2.orgs.find(o => o.id === id)?.name || id; }
+  function techOf(id) { return FT2.techniques.find(t => t.id === id); }
+
+  function usageRow(u, showTech) {
+    const link = u.link ? `<a class="lib-link" href="${esc(u.link)}" target="_blank" rel="noopener">${esc(u.link)}</a>` : '<span style="color:var(--muted)">—</span>';
+    const techCell = showTech ? `<td>${esc(techOf(u.technique)?.name || u.technique)}</td>` : '';
+    return `<tr>${techCell}<td>${esc(orgName(u.org))}</td><td>${esc(u.family)}</td><td>${esc(u.date)}</td><td>${esc(u.evidence)}</td><td>${link}</td></tr>`;
+  }
+
+  function renderByTechnique() {
+    if (!FT2.techniques.length) return `<div class="empty">data/techniques.js 里还没有登记任何技术点。</div>`;
+    return FT2.techniques.map(t => {
+      const rows = FT2.usages.filter(u => u.technique === t.id);
+      const libLink = t.libraryFile ? `<a class="lib-link" href="../library/${esc(t.libraryFile)}" target="_blank" rel="noopener">查看原理 / 动手实验</a>` : '<span style="color:var(--muted)">library/ 暂无条目</span>';
+      const body = rows.length
+        ? `<div class="tablewrap"><table><thead><tr><th>组织</th><th>家族/样本</th><th>日期</th><th>证据</th><th>记录</th></tr></thead><tbody>${rows.map(u => usageRow(u, false)).join('')}</tbody></table></div>`
+        : `<p style="color:var(--muted);font-size:13px;margin:0">还没有样本记录用过这个技术点。</p>`;
+      return `<section class="block" id="tech-${esc(t.id)}" data-block>
+        <h2>${esc(t.name)} <span style="font-weight:400">${(t.attck || []).map(a => `<code>${esc(a)}</code>`).join(' ')}</span></h2>
+        <div class="sub">${esc(t.category || '')} · ${libLink} · 共 ${rows.length} 条记录</div>
+        ${body}
+      </section>`;
+    }).join('');
+  }
+
+  function renderByOrg() {
+    const orgIds = [...new Set(FT2.usages.map(u => u.org))];
+    if (!orgIds.length) return `<div class="empty">data/usage/ 下还没有任何记录。复制 data/_template-usage.js 开始登记第一条。</div>`;
+    return orgIds.map(orgId => {
+      const rows = FT2.usages.filter(u => u.org === orgId);
+      return `<section class="block" id="org-${esc(orgId)}" data-block>
+        <h2>${esc(orgName(orgId))}</h2>
+        <div class="sub">用过 ${new Set(rows.map(r => r.technique)).size} 个技术点,共 ${rows.length} 条记录</div>
+        <div class="tablewrap"><table><thead><tr><th>技术点</th><th>家族/样本</th><th>日期</th><th>证据</th><th>记录</th></tr></thead><tbody>${rows.map(u => usageRow(u, true)).join('')}</tbody></table></div>
+      </section>`;
+    }).join('');
+  }
+
+  let view = 'tech';
+  function render() {
+    main.innerHTML = (view === 'tech' ? renderByTechnique() : renderByOrg())
+      + (failed.length ? `<div class="empty">以下记录文件加载失败,检查 data/manifest.js 路径:<br>${failed.map(esc).join('<br>')}</div>` : '');
+    bindSearch();
+  }
+
+  function bindSearch() {
+    const q = document.getElementById('q');
+    const blocks = [...document.querySelectorAll('[data-block]')];
+    q.oninput = () => {
+      const k = q.value.trim().toLowerCase();
+      for (const b of blocks) b.classList.toggle('hide', !!k && !b.textContent.toLowerCase().includes(k));
+    };
+    q.oninput();
+  }
+
+  document.getElementById('tab-by-tech').onclick = function () {
+    view = 'tech'; this.classList.add('active'); document.getElementById('tab-by-org').classList.remove('active'); render();
+  };
+  document.getElementById('tab-by-org').onclick = function () {
+    view = 'org'; this.classList.add('active'); document.getElementById('tab-by-tech').classList.remove('active'); render();
+  };
+
+  loadAll(window.FT2_MANIFEST || []).then(render);
+})();
+</script>
+</body>
+</html>

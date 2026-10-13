@@ -17,7 +17,7 @@
 | **idasql** | 外部 [allthingsida/idasql-skills](https://github.com/allthingsida/idasql-skills) | 有 IDA Pro；支持无头 CLI 和 UI 端口两种模式 | IDA + idasql.exe/.dll，`where idasql` 能找到 | `/idasql:connect` 起步，最后 `/idasql:storage` 保存 |
 | **ghidrasql** | 外部 [0xeb/ghidrasql-skills](https://github.com/0xeb/ghidrasql-skills) | 只有免费工具，或需要批量无头分析 | Ghidra + ghidrasql | `/ghidrasql:connect` 起步 |
 | **yara** | 自有 | 按固定模板写检测规则，五原则自检，用汇编核对特征 | yara / yarac | `/yara`，或直接说“写一条 yara 规则” |
-| **techniques** | 自有 | 提取样本用到的技术点，标注 ATT&CK，生成 HTML 详细记录 | 无 | `/techniques`，或说“整理这个样本的技术点” |
+| **techniques** | 自有 | 提取样本用到的技术点，标注 ATT&CK，生成可逐步理解、能动手实验的 HTML 详细记录 | 无 | `/techniques`，或说“整理这个样本的技术点” |
 | **report** | 自有 | 把一次分析过程整理成 HTML / Markdown 记录 | 无 | `/report html`、`/report md` |
 | **envcheck** | 自有 | 检查本机程序是否装好、版本是否与插件匹配，缺什么给出安装步骤 | 无 | `/envcheck`、`/envcheck all`、`/envcheck idasql` |
 
@@ -100,7 +100,11 @@ SQL 分析的详细套路见 [docs/sql-workflow.md](docs/sql-workflow.md)。
 
 **补充技术点库**
 
-`techniques` 遇到库里没有的技术点时，会在 `./output/library-drafts/` 生成草稿。检查无样本信息后，复制到 `plugins/techniques/skills/techniques/library/`，并更新该目录的 `README.md` 索引。
+`techniques` 遇到库里没有的技术点时，会在 `./output/library-drafts/` 生成草稿。草稿按 `library/README.md` 的格式写，包含分步拆解和一个可动手复现的小实验。检查无样本信息后，复制到 `plugins/techniques/skills/techniques/library/`，并更新该目录的 `README.md` 索引。
+
+**技术点关联索引**
+
+`techniques` 还维护一份"哪个组织的哪个家族用过哪个技术点"的关联索引，回答类似"这次的样本也用到了某个技术，之前还有谁用过"的问题。这份索引存样本专属信息，不进这个插件仓库——第一次用时把 `plugins/techniques/skills/techniques/usage-index-template/` 复制到你自己的样本分析工作区（和家族指令表一类的私有仓库同级），按 `usage-index-template/README.md` 的步骤登记；`/techniques` 生成完 `techniques.html` 后会自动追加一条记录。
 
 ## 升级外部插件
 
@@ -126,7 +130,7 @@ malscope-market/
     ├── yara/
     │   └── skills/yara/          SKILL.md + templates/default.yar
     ├── techniques/
-    │   └── skills/techniques/    SKILL.md + record.html + library/
+    │   └── skills/techniques/    SKILL.md + record.html + library/ + usage-index-template/
     ├── report/
     │   └── skills/report/        SKILL.md + report.html + report.md
     └── envcheck/
