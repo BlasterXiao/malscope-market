@@ -78,7 +78,7 @@ SQL 分析的详细套路见 [docs/sql-workflow.md](docs/sql-workflow.md)。
 | bnsql | Binary Ninja + bnsql，`BN_INSTALL_DIR` 或 PATH 指向 BN | 0.0.13 | [setup/bnsql.md](plugins/envcheck/skills/envcheck/setup/bnsql.md) |
 | idasql | IDA Pro 9.2–9.4 + 对应构建的 idasql.exe / idasql.dll | 0.0.19 | [setup/idasql.md](plugins/envcheck/skills/envcheck/setup/idasql.md) |
 | ghidrasql | Ghidra 12.1+、JDK 21、LibGhidraHost 扩展 + ghidrasql | 0.0.7 | [setup/ghidrasql.md](plugins/envcheck/skills/envcheck/setup/ghidrasql.md) |
-| malcatsql | Malcat 0.9.x、Python 3.13（能 `import malcat`）、malcatsql 在 PATH | 0.3.0 | [setup/malcatsql.md](plugins/envcheck/skills/envcheck/setup/malcatsql.md) |
+| malcatsql | Malcat 0.9.x、Python 3.13；引擎由插件自带脚本安装（agent 可代劳） | 0.3.0 | [setup/malcatsql.md](plugins/envcheck/skills/envcheck/setup/malcatsql.md) |
 | yara | yara、yarac 在 PATH | 4.x | [setup/yara.md](plugins/envcheck/skills/envcheck/setup/yara.md) |
 
 推荐版本与本市场钉住的插件提交对应，记录在 `plugins/envcheck/skills/envcheck/tools.json`。程序版本和插件版本不一致时，常见症状是查询报“表或列不存在”。

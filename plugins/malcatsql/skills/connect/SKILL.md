@@ -64,6 +64,33 @@ but the hook cannot know that. If a command is denied:
 - tell the analyst which command was denied; they decide (`/unprotect`, or hand you a copy of the
   sample without an executable extension, e.g. named by its hash).
 
+### If `malcatsql` is not installed (first use on a machine)
+
+`malcatsql --version` fails with "command not found" → install it yourself with the plugin's
+installer, `scripts/install.ps1` in this plugin's root (two levels above this skill's base
+directory). First tell the analyst in one line what it does and wait for their OK, because it
+changes the machine:
+
+- checks CPython 3.13 (Malcat's `malcat.pyd` only loads in 3.13);
+- makes `import malcat` work by writing `malcat.pth` (Malcat's own `install_api.py` does the same);
+  Malcat is auto-detected, otherwise pass `-MalcatDir <folder with bin\malcat.pyd>`;
+- `pip install`s the engine from the malscope-market GitHub repository;
+- adds the folder holding `malcatsql.exe` to the **user** PATH.
+
+```bash
+pwsh -NoProfile -File "<plugin root>/scripts/install.ps1"
+pwsh -NoProfile -File "<plugin root>/scripts/install.ps1" -MalcatDir "D:/Tools/malcat"
+```
+
+The last line is `MALCATSQL_EXE=<full path>`. Your current shell does not see the new PATH yet:
+use that full path for the rest of this session (new sessions just type `malcatsql`). Running the
+installer again upgrades the engine.
+
+Stop and hand over to the analyst when it reports: Python 3.13 missing (offer
+`winget install Python.Python.3.13`), Malcat not found and they do not know where it is, or
+`import malcat` failing because of the license (activating Malcat is theirs to do; never enter a
+license key yourself).
+
 ## CLI Help (verbatim `malcatsql --help`)
 
 ```
@@ -149,7 +176,7 @@ malcatsql sample.exe --mcp 9997
 ```
 
 `malcatsql` runs on the **Python 3.13** that can `import malcat` (Malcat's `malcat.pyd` is built
-for 3.13 only). If the command is missing, run `/envcheck malcatsql`.
+for 3.13 only). If the command is missing, install it (see "If `malcatsql` is not installed" above).
 
 Critical guardrails:
 

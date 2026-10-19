@@ -52,15 +52,18 @@ Full column list: [`plugins/malcatsql/skills/connect/references/schema-catalog.m
 
 ## Install
 
-From the root of the malscope-market checkout, with the Python 3.13 that can `import malcat`:
+The plugin ships an installer that does everything (Python 3.13 check, `malcat.pth`, pip install
+from this repository, user PATH); an agent runs it on first use after asking:
 
 ```powershell
-py -3.13 -m pip install -e "tools/malcatsql[server]"
-malcatsql --version          # needs Python 3.13's Scripts folder on PATH
+pwsh -NoProfile -File plugins/malcatsql/scripts/install.ps1                       # from GitHub
+pwsh -NoProfile -File plugins/malcatsql/scripts/install.ps1 -Source tools/malcatsql -Editable   # development
 ```
 
-Then install the skills: `/plugin install malcatsql@malscope-market`. `/envcheck malcatsql` checks
-the whole setup (see `plugins/envcheck/skills/envcheck/setup/malcatsql.md`).
+Manual equivalent: `py -3.13 <Malcat>\install_api.py`, then
+`py -3.13 -m pip install "malcatsql[server] @ git+https://github.com/BlasterXiao/malscope-market.git#subdirectory=tools/malcatsql"`,
+then put Python 3.13's user `Scripts` folder on PATH. Skills: `/plugin install malcatsql@malscope-market`;
+`/envcheck malcatsql` checks the whole setup.
 
 Always call it as `malcatsql`, not `python -m malcatsql`: the sample-execution guard hook on
 analysis machines denies commands that combine a protected sample folder with `python`.
