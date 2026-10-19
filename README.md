@@ -16,6 +16,7 @@
 | **bnsql** | 外部 [0xeb/bnsql-skills](https://github.com/0xeb/bnsql-skills) | 有 Binary Ninja，用 SQL 查函数、伪代码、交叉引用，写回改名注释 | BN + bnsql | `/bnsql:connect` 起步，再用 `/bnsql:functions`、`/bnsql:xrefs` 等 |
 | **idasql** | 外部 [allthingsida/idasql-skills](https://github.com/allthingsida/idasql-skills) | 有 IDA Pro；支持无头 CLI 和 UI 端口两种模式 | IDA + idasql.exe/.dll，`where idasql` 能找到 | `/idasql:connect` 起步，最后 `/idasql:storage` 保存 |
 | **ghidrasql** | 外部 [0xeb/ghidrasql-skills](https://github.com/0xeb/ghidrasql-skills) | 只有免费工具，或需要批量无头分析 | Ghidra + ghidrasql | `/ghidrasql:connect` 起步 |
+| **malcatsql** | 自有（引擎在 [tools/malcatsql](tools/malcatsql)） | 有 Malcat；无头分析，Yara/capa/异常检测直接成表，多样本工作区对比 | Malcat 0.9.x + Python 3.13 + malcatsql | `/malcatsql:connect` 起步，最后 `SELECT save();` 保存 |
 | **yara** | 自有 | 按固定模板写检测规则，五原则自检，用汇编核对特征 | yara / yarac | `/yara`，或直接说“写一条 yara 规则” |
 | **techniques** | 自有 | 提取样本用到的技术点，标注 ATT&CK，生成可逐步理解、能动手实验的 HTML 详细记录 | 无 | `/techniques`，或说“整理这个样本的技术点” |
 | **report** | 自有 | 把一次分析过程整理成 HTML / Markdown 记录 | 无 | `/report html`、`/report md` |
@@ -30,6 +31,7 @@
 | 手上有 IDA，要看函数逻辑 | idasql |
 | 手上有 BN | bnsql |
 | 只有免费工具 | ghidrasql |
+| 手上有 Malcat，或要同时对比多个样本 | malcatsql |
 | 要写检测规则 | yara + 任一 *sql |
 | 要整理样本用了哪些技术 | techniques + 任一 *sql |
 | 分析完要留档 | report（可附 techniques 记录和 yara 规则） |
@@ -76,6 +78,7 @@ SQL 分析的详细套路见 [docs/sql-workflow.md](docs/sql-workflow.md)。
 | bnsql | Binary Ninja + bnsql，`BN_INSTALL_DIR` 或 PATH 指向 BN | 0.0.13 | [setup/bnsql.md](plugins/envcheck/skills/envcheck/setup/bnsql.md) |
 | idasql | IDA Pro 9.2–9.4 + 对应构建的 idasql.exe / idasql.dll | 0.0.19 | [setup/idasql.md](plugins/envcheck/skills/envcheck/setup/idasql.md) |
 | ghidrasql | Ghidra 12.1+、JDK 21、LibGhidraHost 扩展 + ghidrasql | 0.0.7 | [setup/ghidrasql.md](plugins/envcheck/skills/envcheck/setup/ghidrasql.md) |
+| malcatsql | Malcat 0.9.x、Python 3.13（能 `import malcat`）、malcatsql 在 PATH | 0.3.0 | [setup/malcatsql.md](plugins/envcheck/skills/envcheck/setup/malcatsql.md) |
 | yara | yara、yarac 在 PATH | 4.x | [setup/yara.md](plugins/envcheck/skills/envcheck/setup/yara.md) |
 
 推荐版本与本市场钉住的插件提交对应，记录在 `plugins/envcheck/skills/envcheck/tools.json`。程序版本和插件版本不一致时，常见症状是查询报“表或列不存在”。

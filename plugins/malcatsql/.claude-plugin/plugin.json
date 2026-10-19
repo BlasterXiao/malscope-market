@@ -1,0 +1,15 @@
+{
+  "name": "malcatsql",
+  "version": "0.3.0",
+  "description": "SQL interface to Malcat analyses: functions, xrefs, strings, Yara/capa/anomaly detections, decompiled code and writable annotations",
+  "author": {
+    "name": "xiaopotianhuang"
+  },
+  "keywords": [
+    "malcat",
+    "reverse-engineering",
+    "malware-analysis",
+    "sql",
+    "decompilation"
+  ]
+}

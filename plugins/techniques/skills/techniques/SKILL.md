@@ -1,6 +1,6 @@
 ---
 name: techniques
-description: "提取样本用到的技术点（如 DNS 隧道、进程注入、反调试、API 哈希、持久化），每个技术点写原理、分步拆解、交互图/流程图、样本证据、例子、检测要点，并标注 MITRE ATT&CK 编号，输出带图的 HTML 详细记录。Use after a sample has been analyzed with bnsql / idasql / ghidrasql, when the user asks for 技术点、TTP、ATT&CK 映射, or a technique write-up."
+description: "提取样本用到的技术点（如 DNS 隧道、进程注入、反调试、API 哈希、持久化），每个技术点写原理、分步拆解、交互图/流程图、样本证据、例子、检测要点，并标注 MITRE ATT&CK 编号，输出带图的 HTML 详细记录。Use after a sample has been analyzed with bnsql / idasql / ghidrasql / malcatsql, when the user asks for 技术点、TTP、ATT&CK 映射, or a technique write-up."
 argument-hint: "[样本名]"
 ---
 

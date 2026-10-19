@@ -1,6 +1,6 @@
 ---
 name: yara
-description: "按模板编写 YARA 检测规则，并按五原则自检（准确性、唯一性、通用检测性、低误报、快速性）。Use when the user asks to write, generate, review, or fix a YARA rule (写 yara、写规则、检测规则、检查规则) for a sample analyzed in this session. Pulls exact bytes and disassembly through whichever *sql plugin is loaded (bnsql / idasql / ghidrasql)."
+description: "按模板编写 YARA 检测规则，并按五原则自检（准确性、唯一性、通用检测性、低误报、快速性）。Use when the user asks to write, generate, review, or fix a YARA rule (写 yara、写规则、检测规则、检查规则) for a sample analyzed in this session. Pulls exact bytes and disassembly through whichever *sql plugin is loaded (bnsql / idasql / ghidrasql / malcatsql)."
 argument-hint: "[模板名] | 检查 <规则文件>"
 ---
 
@@ -44,7 +44,7 @@ argument-hint: "[模板名] | 检查 <规则文件>"
 
 ## 第 2 步：取候选特征
 
-使用本会话已加载并已连接的 *sql 插件（bnsql / idasql / ghidrasql 都可以；如果都没连接，先请用户连接一个）。
+使用本会话已加载并已连接的 *sql 插件（bnsql / idasql / ghidrasql / malcatsql 都可以；如果都没连接，先请用户连接一个）。
 
 按价值从高到低找：
 

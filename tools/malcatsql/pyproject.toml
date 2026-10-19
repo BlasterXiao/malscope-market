@@ -1,0 +1,47 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "malcatsql"
+version = "0.3.0"
+description = "SQL interface for Malcat analyses (CLI, HTTP and MCP)"
+readme = "README.md"
+# malcat.pyd (Malcat 0.9.x) is built for CPython 3.13 only
+requires-python = ">=3.13,<3.14"
+dependencies = [
+    "apsw>=3.53",
+]
+
+[project.optional-dependencies]
+server = [
+    "fastapi>=0.104.0",
+    "uvicorn[standard]>=0.24.0",
+    "pydantic>=2.0.0",
+    "mcp>=1.20",
+]
+dev = [
+    "pytest>=7.4.0",
+    "httpx>=0.25.0",
+    "black>=23.0.0",
+    "isort>=5.12.0",
+    "mypy>=1.6.0",
+]
+
+[project.scripts]
+malcatsql = "malcatsql.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.black]
+line-length = 100
+
+[tool.isort]
+profile = "black"
+line_length = 100
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-m 'not slow'"
+markers = ["slow: needs a large system DLL (shell32.dll)"]

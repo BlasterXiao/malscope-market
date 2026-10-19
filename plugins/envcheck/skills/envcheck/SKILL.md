@@ -1,7 +1,7 @@
 ---
 name: envcheck
-description: "检查本机分析环境：bnsql / idasql / ghidrasql / yara 的程序是否装好、版本是否与插件匹配、宿主工具（Binary Ninja、IDA、Ghidra 扩展）是否就位，缺什么给出安装步骤。Use when the user asks to check the environment, 环境检查, 装好了没, 为什么连不上, or when a *sql connect step fails because a program is missing."
-argument-hint: "[all | bnsql | idasql | ghidrasql | yara]"
+description: "检查本机分析环境：bnsql / idasql / ghidrasql / malcatsql / yara 的程序是否装好、版本是否与插件匹配、宿主工具（Binary Ninja、IDA、Ghidra 扩展、Malcat）是否就位，缺什么给出安装步骤。Use when the user asks to check the environment, 环境检查, 装好了没, 为什么连不上, or when a *sql connect step fails because a program is missing."
+argument-hint: "[all | bnsql | idasql | ghidrasql | malcatsql | yara]"
 ---
 
 # 本机环境检查

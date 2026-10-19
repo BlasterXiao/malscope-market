@@ -1,0 +1,32 @@
+{
+  "name": "malcatsql",
+  "version": "0.3.0",
+  "description": "SQL interface to Malcat analyses: functions, xrefs, strings, Yara/capa/anomaly detections, decompiled code and writable annotations",
+  "author": {
+    "name": "xiaopotianhuang"
+  },
+  "keywords": [
+    "malcat",
+    "reverse-engineering",
+    "malware-analysis",
+    "sql",
+    "decompilation"
+  ],
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "MalcatSQL",
+    "shortDescription": "Reverse engineering skills for malcatsql-driven Malcat workflows",
+    "longDescription": "Adds a namespaced malcatsql skill set for malware triage, disassembly, cross-references, Malcat detections (Yara, capa, anomalies, constants), decompilation and SQL-driven annotations.",
+    "developerName": "xiaopotianhuang",
+    "category": "Reverse Engineering",
+    "capabilities": [
+      "Interactive",
+      "Write"
+    ],
+    "defaultPrompt": [
+      "Start a malcatsql session and orient the sample.",
+      "Triage this sample with Malcat detections and imports.",
+      "Decompile this function and annotate it."
+    ]
+  }
+}

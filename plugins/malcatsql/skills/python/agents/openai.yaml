@@ -1,0 +1,4 @@
+interface:
+  display_name: "malcatsql Python"
+  short_description: "Run Python against the live Malcat analysis through malcatsql."
+  default_prompt: "Use $python to run a Python snippet or file inside the malcatsql Malcat session and capture the output."

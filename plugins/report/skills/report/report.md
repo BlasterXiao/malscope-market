@@ -2,7 +2,7 @@
 
 - 日期：{{YYYY-MM-DD}}
 - 样本：{{文件类型}} · {{架构}} · {{大小}}
-- 工具：{{bnsql / idasql / ghidrasql}}（{{CLI / UI}}）
+- 工具：{{bnsql / idasql / ghidrasql / malcatsql}}（{{CLI / UI}}）
 - 定性：{{一两句话}}
 
 ## 样本行为总流程

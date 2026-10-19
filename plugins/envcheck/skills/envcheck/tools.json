@@ -59,11 +59,34 @@
       "setup": "setup/ghidrasql.md"
     },
     {
+      "id": "malcatsql",
+      "plugin": "malcatsql",
+      "plugin_pin": "本仓库（插件 0.3.0）",
+      "binary": "malcatsql",
+      "version_cmd": "malcatsql --version",
+      "recommended_program": "0.3.0",
+      "release": "本仓库 tools/malcatsql（pip install -e）",
+      "host": "Malcat 0.9.x（授权支持 Python API）+ CPython 3.13",
+      "host_checks": [
+        "py -0p 列表里有 3.13（Malcat 的 malcat.pyd 只支持 CPython 3.13）",
+        "py -3.13 -c \"import malcat\" 不报错（在 Malcat 安装目录用 3.13 执行过 install_api.py）",
+        "py -3.13 -c \"import apsw, fastapi, uvicorn, mcp\" 不报错（pip install -e \"tools/malcatsql[server]\"）",
+        "where malcatsql 能找到（Python 3.13 的 Scripts 目录在 PATH 中）"
+      ],
+      "common_errors": {
+        "ModuleNotFoundError: No module named 'malcat'": "Python 3.13 还没装 Malcat API：在 Malcat 安装目录执行 py -3.13 install_api.py",
+        "malcat.pyd is built for CPython 3.13": "用的不是 3.13 解释器：用 py -3.13 安装 malcatsql"
+      },
+      "setup": "setup/malcatsql.md"
+    },
+    {
       "id": "yara",
       "plugin": "yara",
       "plugin_pin": "本仓库",
       "binary": "yara",
-      "extra_binaries": ["yarac"],
+      "extra_binaries": [
+        "yarac"
+      ],
       "version_cmd": "yara --version",
       "recommended_program": "4.x",
       "release": "https://github.com/VirusTotal/yara/releases",

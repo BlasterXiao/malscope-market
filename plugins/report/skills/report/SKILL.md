@@ -1,6 +1,6 @@
 ---
 name: report
-description: "把本次会话里的样本分析过程整理成本地记录报告，HTML 或 Markdown。Use when the user asks for 报告、分析记录、留档、report, typically at the end of an analysis done with bnsql / idasql / ghidrasql, yara, or techniques."
+description: "把本次会话里的样本分析过程整理成本地记录报告，HTML 或 Markdown。Use when the user asks for 报告、分析记录、留档、report, typically at the end of an analysis done with bnsql / idasql / ghidrasql / malcatsql, yara, or techniques."
 argument-hint: "html | md"
 ---
 

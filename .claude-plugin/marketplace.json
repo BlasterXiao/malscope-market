@@ -47,6 +47,12 @@
       }
     },
     {
+      "name": "malcatsql",
+      "description": "【自有】有 Malcat 时使用：用 SQL 查 Malcat 无头分析结果（函数、交叉引用、字符串、Yara/capa/异常检测、伪代码），写回改名与注释，支持多样本工作区。本机需要 Malcat 0.9.x + Python 3.13 + malcatsql 引擎（本仓库 tools/malcatsql）。",
+      "category": "reverse-engineering",
+      "source": "./plugins/malcatsql"
+    },
+    {
       "name": "yara",
       "description": "【自有】按模板编写 YARA 规则，并按准确性、唯一性、通用检测性、低误报、快速性五原则自检。配合任一 *sql 插件取原始字节。本机需要 yara / yarac。",
       "category": "security",
@@ -66,7 +72,7 @@
     },
     {
       "name": "envcheck",
-      "description": "【自有】检查本机的 bnsql / idasql / ghidrasql / yara 程序是否装好、版本是否与插件匹配，缺什么给出安装步骤。建议装外部插件后先跑一次 /envcheck。",
+      "description": "【自有】检查本机的 bnsql / idasql / ghidrasql / malcatsql / yara 程序是否装好、版本是否与插件匹配，缺什么给出安装步骤。建议装外部插件后先跑一次 /envcheck。",
       "category": "security",
       "source": "./plugins/envcheck"
     }

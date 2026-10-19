@@ -1,6 +1,6 @@
 # 用 SQL 插件分析样本的套路
 
-适用于 bnsql / idasql / ghidrasql。三者的核心能力名字一样（connect、analysis、functions、data、decompiler、disassembly、xrefs、types、annotations），所以套路通用，只有保存方式等少数地方不同。
+适用于 bnsql / idasql / ghidrasql / malcatsql。三者的核心能力名字一样（connect、analysis、functions、data、decompiler、disassembly、xrefs、types、annotations），所以套路通用，只有保存方式等少数地方不同。
 
 **为什么用 SQL：** 大模型非常熟悉 SQL，一条查询就能精确拿到需要的列和行，比逐个调用 MCP 工具省 token。所有写回（改名、注释、类型）也是 SQL。
 
