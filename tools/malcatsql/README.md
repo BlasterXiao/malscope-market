@@ -37,7 +37,7 @@ carrying names from a solved sample to its relatives in one validated statement.
 | Data | `strings`, `string_refs`, `byte_search`, `structures`, `carved`, `vfiles` |
 | Malcat detections | `signatures`, `signature_hits` (Yara), `capa`, `capa_matches`, `anomalies`, `constants` |
 | Decompiler | `decompile()`, `pseudocode`, `decompile_aliases` (writable) |
-| Annotations | `comments`, `names`, `funcs.name`, `set_name()`, `set_comment()`, `save()` → `.malcat` project (open it in the Malcat GUI to see the annotations) |
+| Annotations | `comments`, `names`, `funcs.name`, `set_name()`, `set_comment()`, `save()` → `<file>.malcat` project, which the Malcat GUI loads automatically when you open the sample |
 | Escape hatch | `malcat_python()` (gated) |
 
 Full column list: [`plugins/malcatsql/skills/connect/references/schema-catalog.md`](../../plugins/malcatsql/skills/connect/references/schema-catalog.md)

@@ -222,7 +222,8 @@ Never skip steps 2-5 when the request is broad or ambiguous.
 ### Explicit-Save Contract
 
 - Every write is applied to the session's analysis immediately but lives only in memory.
-- `SELECT save();` writes `<file>.malcat` (comments, labels, decompile aliases). `SELECT save('x.malcat')`
+- `SELECT save();` writes `<file>.malcat` (comments, labels, decompile aliases); the Malcat GUI loads
+  it automatically when the analyst opens the sample, so that is how your annotations reach them. `SELECT save('x.malcat')`
   saves elsewhere. `binary.unsaved_changes` tells you whether anything is pending.
 - Renames trigger Malcat re-analysis **lazily**: the first read after a batch of renames pays one
   `Analysis.run()` (~0.03 s small files, ~1.5 s large DLLs), no matter how many rows changed. Batch
